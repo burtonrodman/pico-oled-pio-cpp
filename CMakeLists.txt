@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 # CHECK THESE PROPERTIES
 set(PICO_BOARD pico_w)
-set(target_project docker_example)
+set(target_project pico_oled_pio_cpp)
 
 
 include($ENV{PICO_SDK_PATH}/external/pico_sdk_import.cmake)
