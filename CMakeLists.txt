@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.18.4)
 
 # CHECK THESE PROPERTIES
 set(PICO_BOARD pico_w CACHE STRING "Board type")
@@ -17,17 +17,17 @@ set(CMAKE_CXX_STANDARD 17)
 
 pico_sdk_init()
 
-add_executable(${target_project})
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/Pi-Pico-SSD1306-C-Library/src/lib/OLED)
 
-target_sources(${target_project} PUBLIC
-    main.c
+add_executable(${target_project}
+    main.cpp
 )
 
-target_link_libraries(
-    ${target_project} 
+target_link_libraries(${target_project} 
     pico_stdlib
     pico_cyw43_arch_none
     hardware_i2c
+    OLED
 )
 
 pico_add_extra_outputs(${target_project})
