@@ -17,7 +17,10 @@ set(CMAKE_CXX_STANDARD 17)
 
 pico_sdk_init()
 
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/Pi-Pico-SSD1306-C-Library/src/lib/OLED)
+if (NOT TARGET lib_pico_i2c)
+    add_subdirectory(${CMAKE_SOURCE_DIR}/lib/lib_pico_i2c)
+endif()
+add_subdirectory(${CMAKE_SOURCE_DIR}/lib/lib_pico_oled)
 
 add_executable(${target_project}
     main.cpp
@@ -27,7 +30,8 @@ target_link_libraries(${target_project}
     pico_stdlib
     pico_cyw43_arch_none
     hardware_i2c
-    OLED
+    lib_pico_i2c
+    lib_pico_oled
 )
 
 pico_add_extra_outputs(${target_project})
