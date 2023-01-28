@@ -1,8 +1,9 @@
 add_library(lib_pico_i2c
     I2C.h
-    HardwareI2C.cpp
-    HardwareI2C.h
-    PioI2C.cpp
+    hardware/HardwareI2C.cpp
+    hardware/HardwareI2C.h
+    pio/PioI2C.cpp
+    pio/PioI2C.h
     SoftI2C.cpp
 )
 

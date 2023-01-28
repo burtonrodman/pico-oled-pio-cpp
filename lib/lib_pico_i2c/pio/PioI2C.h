@@ -1,12 +1,11 @@
-#ifndef _HardwareI2C_H_
-#define _HardwareI2C_H_
+#ifndef _PioI2C_H_
+#define _PioI2C_H_
 
-#include "hardware/i2c.h"
 #include "pico/stdlib.h"
 
-#include "I2C.h"
+#include "../I2C.h"
 
-class HardwareI2C : public I2C 
+class PioI2C : public I2C 
 {
     private:
         uint8_t _scl;
@@ -15,14 +14,14 @@ class HardwareI2C : public I2C
         i2c_inst_t* _i2c;
 
     public:
-        HardwareI2C(
+        PioI2C(
             uint8_t scl,
             uint8_t sda,
             uint32_t freq,
             i2c_inst_t* i2c
         );
 
-        ~HardwareI2C();
+        ~PioI2C();
 
         virtual uint init();
 

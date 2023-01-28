@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "lib/lib_pico_i2c/I2C.h"
-#include "lib/lib_pico_i2c/HardwareI2C.h"
+#include "lib/lib_pico_i2c/hardware/HardwareI2C.h"
 
 #include "lib/lib_pico_oled/OLED.h"
 #include "lib/lib_pico_oled/font/Cherry_Cream_Soda_Regular_16.h"
