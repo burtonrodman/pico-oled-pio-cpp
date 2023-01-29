@@ -2,7 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 
-#include "../I2C.h"
+#include "I2C.h"
 #include "HardwareI2C.h"
 
 HardwareI2C::HardwareI2C(

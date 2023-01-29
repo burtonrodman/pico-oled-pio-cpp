@@ -30,6 +30,7 @@ target_link_libraries(${target_project}
     pico_stdlib
     pico_cyw43_arch_none
     hardware_i2c
+    hardware_pio
     lib_pico_i2c
     lib_pico_oled
 )
