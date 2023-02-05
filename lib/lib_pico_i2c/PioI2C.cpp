@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+
 #include "pio_i2c.h"
 
 #include "I2C.h"
@@ -23,7 +24,6 @@ uint PioI2C::init() {
     printf("in PioI2C::init\n");
 
     uint offset = pio_add_program(pio0, &i2c_program);
-// static inline void i2c_program_init(PIO pio, uint sm, uint offset, uint pin_sda, uint pin_scl) {
     i2c_program_init(pio0, 0, offset, 16, 17);
     
     printf("PioI2C::init done\n");
@@ -36,8 +36,7 @@ int PioI2C::write_blocking(
     size_t len,
     bool nostop
 ) {
-// int pio_i2c_write_blocking(PIO pio, uint sm, uint8_t addr, uint8_t *txbuf, uint len);
-    int err = pio_i2c_write_blocking(pio0, 0, addr, src, len);
+    int err = pio_i2c_write_blocking(pio0, 0u, addr, src, len);
     if (err < 0) {
         printf("!");
         return err;

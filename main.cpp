@@ -1,7 +1,8 @@
 #include <stdio.h>
 
 #include "lib/lib_pico_i2c/I2C.h"
-#include "lib/lib_pico_i2c/hardware/HardwareI2C.h"
+// #include "lib/lib_pico_i2c/HardwareI2C.h"
+#include "lib/lib_pico_i2c/PioI2C.h"
 
 #include "lib/lib_pico_oled/OLED.h"
 #include "lib/lib_pico_oled/font/Cherry_Cream_Soda_Regular_16.h"
@@ -24,11 +25,14 @@ int main() {
     sleep_ms(50);
 
     // SCL, SDA, Width, Height, Frequency, I2C Port
-    printf("creating HardwareI2C\n");
-    HardwareI2C hw(17, 16, 400 * 1000, i2c0);
+    // printf("creating HardwareI2C\n");
+    // HardwareI2C hw(17, 16, 400 * 1000, i2c0);
+
+    printf("creating PioI2C\n");
+    PioI2C pio(17, 16, 400 * 1000, pio0);
 
     printf("assigning hw to i2c pointer\n");
-    I2C* i2c = &hw;
+    I2C* i2c = &pio;
 
     printf("creating OLED\n");
     OLED oled(128, 64, false, i2c);

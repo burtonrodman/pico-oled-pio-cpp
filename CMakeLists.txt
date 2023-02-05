@@ -26,6 +26,8 @@ add_executable(${target_project}
     main.cpp
 )
 
+set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
+
 target_link_libraries(${target_project} 
     pico_stdlib
     pico_cyw43_arch_none

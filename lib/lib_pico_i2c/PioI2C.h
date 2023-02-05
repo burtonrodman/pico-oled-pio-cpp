@@ -2,6 +2,7 @@
 #define _PioI2C_H_
 
 #include "pico/stdlib.h"
+#include "pio_i2c.h"
 
 #include "I2C.h"
 
