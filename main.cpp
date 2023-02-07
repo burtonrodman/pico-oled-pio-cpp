@@ -12,6 +12,8 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 
+#include "MixerModel.h"
+
 int main() {
     stdio_init_all();
     
