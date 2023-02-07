@@ -21,13 +21,12 @@ add_executable(${target_project})
 
 target_sources(${target_project} PUBLIC
     main.cpp
-    OLED.cpp
-    OLED.h
 )
 
 set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
 
 add_subdirectory(i2c)
+add_subdirectory(oled)
 
 target_link_libraries(${target_project} PRIVATE
     pico_stdlib
@@ -35,6 +34,7 @@ target_link_libraries(${target_project} PRIVATE
     hardware_pio
     pico_cyw43_arch_none
     i2c
+    oled
 )
 
 pico_add_extra_outputs(${target_project})

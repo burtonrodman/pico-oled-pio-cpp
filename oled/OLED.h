@@ -1,7 +1,6 @@
 #ifndef _OLED_H_
 #define _OLED_H_
 
-#include "hardware/i2c.h"
 #include "pico/stdlib.h"
 #include "I2C.h"
 
