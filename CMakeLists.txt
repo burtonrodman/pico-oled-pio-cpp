@@ -19,21 +19,12 @@ pico_sdk_init()
 
 add_executable(${target_project})
 
-pico_generate_pio_header(${target_project} ${CMAKE_CURRENT_LIST_DIR}/i2c.pio)
-
 target_sources(${target_project} PUBLIC
     main.cpp
     OLED.cpp
     OLED.h
-    pio_i2c.c
-    pio_i2c.h
-    PioI2C.cpp
-    PioI2C.h
 )
 
-set_source_files_properties(pio_i2c.h  PROPERTIES COMPILE_FLAGS -fpermissive)
-set_source_files_properties(PioI2C.h PROPERTIES COMPILE_FLAGS -fpermissive)
-set_source_files_properties(PioI2C.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
 set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
 
 add_subdirectory(i2c)
