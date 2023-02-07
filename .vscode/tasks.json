@@ -19,7 +19,7 @@
                 "--rm",
                 "burtonrodman/pico-sdk",
                 "bash",
-                "./configure.sh"
+                "./scripts/configure.sh"
             ],
             "windows": {
                 "options": {
@@ -46,7 +46,7 @@
                 "--rm",
                 "burtonrodman/pico-sdk",
                 "bash",
-                "./make.sh"
+                "./scripts/make.sh"
             ],
             "group": {
                 "kind": "build",
