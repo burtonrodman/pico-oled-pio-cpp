@@ -17,24 +17,41 @@ set(CMAKE_CXX_STANDARD 17)
 
 pico_sdk_init()
 
-if (NOT TARGET lib_pico_i2c)
-    add_subdirectory(${CMAKE_SOURCE_DIR}/lib/lib_pico_i2c)
-endif()
-add_subdirectory(${CMAKE_SOURCE_DIR}/lib/lib_pico_oled)
+add_executable(${target_project})
 
-add_executable(${target_project}
+pico_generate_pio_header(${target_project} ${CMAKE_CURRENT_LIST_DIR}/i2c.pio)
+
+target_sources(${target_project} PUBLIC
+    HardwareI2C.h
+    HardwareI2C.cpp
+    I2C.h
     main.cpp
+    OLED.cpp
+    OLED.h
+    pio_i2c.c
+    pio_i2c.h
+    PioI2C.cpp
+    PioI2C.h
+    SoftI2C.cpp
 )
 
+set_source_files_properties(pio_i2c.h  PROPERTIES COMPILE_FLAGS -fpermissive)
+set_source_files_properties(PioI2C.h PROPERTIES COMPILE_FLAGS -fpermissive)
+set_source_files_properties(PioI2C.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
 set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
 
-target_link_libraries(${target_project} 
+target_link_libraries(${target_project} PRIVATE
     pico_stdlib
-    pico_cyw43_arch_none
     hardware_i2c
     hardware_pio
-    lib_pico_i2c
-    lib_pico_oled
+    pico_cyw43_arch_none
 )
 
 pico_add_extra_outputs(${target_project})
+
+add_compile_options(
+    -Wall
+    -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
+    -Wno-unused-function # we have some for the docs that aren't called
+    -Wno-maybe-uninitialized
+)

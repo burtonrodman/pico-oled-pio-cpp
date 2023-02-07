@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
-#include "pio_i2c.h"
-
 #include "I2C.h"
 #include "PioI2C.h"
+#include "pio_i2c.h"
+#include "pio_i2c.c"
+
 
 PioI2C::PioI2C(
     uint8_t scl,
@@ -32,8 +33,8 @@ uint PioI2C::init() {
 
 int PioI2C::write_blocking(
     uint8_t addr,
-    const uint8_t* src,
-    size_t len,
+    uint8_t* src,
+    uint len,
     bool nostop
 ) {
     int err = pio_i2c_write_blocking(pio0, 0u, addr, src, len);

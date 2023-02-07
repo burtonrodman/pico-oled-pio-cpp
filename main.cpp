@@ -1,11 +1,13 @@
 #include <stdio.h>
 
-#include "lib/lib_pico_i2c/I2C.h"
-// #include "lib/lib_pico_i2c/HardwareI2C.h"
-#include "lib/lib_pico_i2c/PioI2C.h"
+#include "I2C.h"
+// #include "HardwareI2C.h"
+#include "PioI2C.h"
+#include "pio_i2c.h"
+#include "i2c.pio.h"
 
-#include "lib/lib_pico_oled/OLED.h"
-#include "lib/lib_pico_oled/font/Cherry_Cream_Soda_Regular_16.h"
+#include "OLED.h"
+#include "font/Cherry_Cream_Soda_Regular_16.h"
 
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"

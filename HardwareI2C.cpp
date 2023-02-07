@@ -41,8 +41,8 @@ uint HardwareI2C::init() {
 
 int HardwareI2C::write_blocking(
     uint8_t addr,
-    const uint8_t* src,
-    size_t len,
+    uint8_t* src,
+    uint len,
     bool nostop
 ) {
     int written = i2c_write_blocking(_i2c, addr, src, len, nostop);

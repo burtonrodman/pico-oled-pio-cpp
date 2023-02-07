@@ -3,7 +3,7 @@
 
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
-#include "../lib_pico_i2c/I2C.h"
+#include "I2C.h"
 
 #define OLED_ADDRESS 0x3C
 

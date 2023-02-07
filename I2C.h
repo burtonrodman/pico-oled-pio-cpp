@@ -10,8 +10,8 @@ class I2C
         virtual uint init() = 0;
         virtual int write_blocking(
             uint8_t addr,
-            const uint8_t* src,
-            size_t len,
+            uint8_t* src,
+            uint len,
             bool nostop
         ) = 0;
 };
