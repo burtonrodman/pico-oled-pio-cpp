@@ -19,22 +19,17 @@ HardwareI2C::HardwareI2C(
 }
 
 HardwareI2C::~HardwareI2C() {
-    printf("~HardwareI2C\n");
     i2c_deinit(_i2c);
 }
 
 uint HardwareI2C::init() {
     uint actualbaud = i2c_init(i2c0, 400 * 1000);
 
-    printf("set function\n");
     gpio_set_function(_sda, GPIO_FUNC_I2C);
     gpio_set_function(_scl, GPIO_FUNC_I2C);
 
-    printf("pull up - scl=%d, sda=%d\n", _scl, _sda);
     gpio_pull_up(_sda);
     gpio_pull_up(_scl);
-
-    printf("after pull up \n");
 
     return actualbaud;
 }

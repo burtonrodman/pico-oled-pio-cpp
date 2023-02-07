@@ -100,9 +100,7 @@ OLED::OLED(
     uint actualbaud = _i2c->init();
     printf("actualbuad %d\n");
 
-    printf("before OLED::init\n");
     init();
-    printf("after OLED::init\n");
 }
 
 OLED::~OLED() {}
@@ -121,7 +119,6 @@ void OLED::isInverse(bool inverse) {
 }
 
 void OLED::clear() {
-    printf("in OLED::clear\n");
     for (uint16_t i = 0; i < BUFFERSIZE; i++) {
         BUFFER[i] = 0x00;
     }

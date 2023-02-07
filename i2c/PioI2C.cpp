@@ -22,12 +22,10 @@ PioI2C::PioI2C(
 PioI2C::~PioI2C() { }
 
 uint PioI2C::init() {
-    printf("in PioI2C::init\n");
 
     uint offset = pio_add_program(pio0, &i2c_program);
     i2c_program_init(pio0, 0, offset, 16, 17);
     
-    printf("PioI2C::init done\n");
     return 0;
 }
 
