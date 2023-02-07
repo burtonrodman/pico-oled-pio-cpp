@@ -21,10 +21,11 @@ int main() {
         return -1;
     }
 
-    cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
-    sleep_ms(10000);
-    cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
-    sleep_ms(50);
+    // pause to allow starting PuTTY
+    // cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
+    // sleep_ms(10000);
+    // cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
+    // sleep_ms(50);
 
     // SCL, SDA, Width, Height, Frequency, I2C Port
     // printf("creating HardwareI2C\n");
@@ -48,11 +49,11 @@ int main() {
     oled.drawCircle(100, 16, 14);
     oled.drawFilledCircle(100, 16, 10);
     // Print defaule font string
-    uint8_t string1[] = "Hello";
+    uint8_t string1[] = "sup";
     oled.print(0, 35, string1);
     // Print custom font string
     oled.setFont(&Cherry_Cream_Soda_Regular_16);
-    uint8_t string2[] = "world!";
+    uint8_t string2[] = "yo!";
     oled.print(60, 32, string2);
     // Draw a line
     oled.drawFastHLine(0, 60, 128);

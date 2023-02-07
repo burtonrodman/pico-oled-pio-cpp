@@ -22,9 +22,6 @@ add_executable(${target_project})
 pico_generate_pio_header(${target_project} ${CMAKE_CURRENT_LIST_DIR}/i2c.pio)
 
 target_sources(${target_project} PUBLIC
-    HardwareI2C.h
-    HardwareI2C.cpp
-    I2C.h
     main.cpp
     OLED.cpp
     OLED.h
@@ -32,7 +29,6 @@ target_sources(${target_project} PUBLIC
     pio_i2c.h
     PioI2C.cpp
     PioI2C.h
-    SoftI2C.cpp
 )
 
 set_source_files_properties(pio_i2c.h  PROPERTIES COMPILE_FLAGS -fpermissive)
@@ -40,11 +36,14 @@ set_source_files_properties(PioI2C.h PROPERTIES COMPILE_FLAGS -fpermissive)
 set_source_files_properties(PioI2C.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
 set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
 
+add_subdirectory(i2c)
+
 target_link_libraries(${target_project} PRIVATE
     pico_stdlib
     hardware_i2c
     hardware_pio
     pico_cyw43_arch_none
+    i2c
 )
 
 pico_add_extra_outputs(${target_project})
@@ -54,4 +53,5 @@ add_compile_options(
     -Wno-format          # int != int32_t as far as the compiler is concerned because gcc has int32_t as long int
     -Wno-unused-function # we have some for the docs that aren't called
     -Wno-maybe-uninitialized
+    -Wconversion
 )
