@@ -36,6 +36,8 @@ target_link_libraries(${target_project} PRIVATE
     pico_cyw43_arch_none
     i2c
     oled
+    tinyusb_host
+    tinyusb_board
 )
 
 pico_add_extra_outputs(${target_project})

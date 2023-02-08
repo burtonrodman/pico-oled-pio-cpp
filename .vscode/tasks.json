@@ -17,7 +17,7 @@
                 "--env",
                 "PICO_SDK_PATH=/pico/pico-sdk",
                 "--rm",
-                "burtonrodman/pico-sdk",
+                "burtonrodman/pico-sdk:midihost",
                 "bash",
                 "./scripts/configure.sh"
             ],
@@ -44,7 +44,7 @@
                 "--env",
                 "PICO_SDK_PATH=/pico/pico-sdk",
                 "--rm",
-                "burtonrodman/pico-sdk",
+                "burtonrodman/pico-sdk:midihost",
                 "bash",
                 "./scripts/make.sh"
             ],
