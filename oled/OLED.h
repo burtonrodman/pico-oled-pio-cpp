@@ -46,7 +46,6 @@ struct GFXfont {
 
 class OLED {
     private:
-        uint32_t FREQUENCY;
         I2C* _i2c;
 
         uint8_t WIDTH;
