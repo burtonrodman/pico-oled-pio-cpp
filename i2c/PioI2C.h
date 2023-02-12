@@ -9,17 +9,19 @@
 class PioI2C : public I2C 
 {
     private:
-        uint8_t _scl;
-        uint8_t _sda;
-        uint32_t _freq;
         PIO _pio;
+        uint _sm;
+        uint _scl;
+        uint _sda;
+        uint32_t _freq;
 
     public:
         PioI2C(
-            uint8_t scl,
-            uint8_t sda,
-            uint32_t freq,
-            PIO i2c
+            PIO pio,
+            uint sm,
+            uint scl,
+            uint sda,
+            uint32_t freq
         );
 
         ~PioI2C();

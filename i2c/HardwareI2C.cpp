@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include "pico/stdlib.h"
 
 #include "hardware/i2c.h"
@@ -19,10 +19,12 @@ HardwareI2C::HardwareI2C(
 }
 
 HardwareI2C::~HardwareI2C() {
+    printf("in HardwareI2C::~HardwareI2C\n");
     i2c_deinit(_i2c);
 }
 
 uint HardwareI2C::init() {
+    printf("in HardwareI2C::init, sda=%d, scl=%d\n", _sda, _scl);
     uint actualbaud = i2c_init(i2c0, 400 * 1000);
 
     gpio_set_function(_sda, GPIO_FUNC_I2C);

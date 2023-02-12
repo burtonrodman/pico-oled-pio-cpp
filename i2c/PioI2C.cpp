@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include <cstdio>
 #include "pico/stdlib.h"
 
 #include "I2C.h"
@@ -8,25 +8,26 @@
 
 
 PioI2C::PioI2C(
-    uint8_t scl,
-    uint8_t sda,
-    uint32_t freq,
-    PIO pio
+    PIO pio,
+    uint sm,
+    uint scl,
+    uint sda,
+    uint32_t freq
 ) {
+    _pio = pio;
+    _sm = sm;
     _scl = scl; 
     _sda = sda;
     _freq = freq;
-    _pio = pio;
 }
 
 PioI2C::~PioI2C() { }
 
 uint PioI2C::init() {
-
-    uint offset = pio_add_program(pio0, &i2c_program);
-    i2c_program_init(pio0, 0, offset, 16, 17);
+    const uint offset = pio_add_program(_pio, &i2c_program);
+    i2c_program_init(_pio, _sm, offset, _sda, _scl);
     
-    return 0;
+    return offset;
 }
 
 int PioI2C::write_blocking(
@@ -35,12 +36,16 @@ int PioI2C::write_blocking(
     uint len,
     bool nostop
 ) {
-    int err = pio_i2c_write_blocking(pio0, 0u, addr, src, len);
+    static int writecnt;
+
+    writecnt++;
+    int err = pio_i2c_write_blocking(_pio, _sm, addr, src, len);
     if (err < 0) {
         printf("!");
         return err;
     } else {
-        printf(".");
+        if (writecnt % 10 == 0)
+            printf(".");
         return len;
     }
 }

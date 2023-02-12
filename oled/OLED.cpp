@@ -1,6 +1,5 @@
 #include <cstdio>
-#include <cstring>
-
+#include "pico/stdlib.h"
 #include "OLED.h"
 #include "font/Dialog_bold_16.h"
 
@@ -26,6 +25,8 @@ bool OLED::bitRead(uint8_t character, uint8_t index) {
 }
 
 void OLED::init() {
+    clear();
+
     // Display init
     write_cmd(SET_DISP | 0x00);
     // Set horizontal address mode
@@ -90,20 +91,17 @@ OLED::OLED(
     bool rev,
     I2C* i2c
 ) {
+    printf("in OLED::OLED\n");
     WIDTH = width, HEIGHT = height;
     PAGES = height / 8, BUFFERSIZE = width * PAGES;
     _i2c = i2c;
     myFont = &Dialog_bold_16;
     reversed = rev;
-
-    clear();
-    uint actualbaud = _i2c->init();
-    printf("actualbuad %d\n");
-
-    init();
 }
 
-OLED::~OLED() {}
+OLED::~OLED() {
+    printf("in OLED::~OLED\n");
+}
 
 void OLED::isDisplay(bool display) {
     write_cmd(SET_DISP | display);
@@ -125,6 +123,7 @@ void OLED::clear() {
 }
 
 void OLED::show() {
+    printf("in show\n");
     // Set col, row, and page address for sending data buffer
     write_cmd(SET_COL_ADDR);
     write_cmd(0);
@@ -144,6 +143,7 @@ void OLED::drawPixel(uint8_t x, uint8_t y) {
 }
 
 void OLED::drawFastHLine(uint8_t x, uint8_t y, uint8_t width) {
+    printf("in drawFastHLine\n");
     for (uint8_t i = 0; i < width; i++) {
         drawPixel(x + i, y);
     }
@@ -168,6 +168,7 @@ void OLED::drawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2) {
 }
 
 void OLED::drawCircle(int16_t xc, int16_t yc, uint16_t r) {
+    printf("in drawCircle\n");
     int16_t x = -r;
     int16_t y = 0;
     int16_t e = 2 - (2 * r);
@@ -185,6 +186,7 @@ void OLED::drawCircle(int16_t xc, int16_t yc, uint16_t r) {
 }
 
 void OLED::drawFilledCircle(int16_t xc, int16_t yc, uint16_t r) {
+    printf("in drawFilledCircle\n");
     int16_t x = r;
     int16_t y = 0;
     int16_t e = 1 - x;
@@ -263,6 +265,7 @@ void OLED::printChar(uint8_t x, uint8_t y, uint8_t character) {
 }
 
 void OLED::print(uint8_t x, uint8_t y, uint8_t* string) {
+    printf("in print\n");
     for (uint8_t i = 0; string[i]; i++) {
         uint8_t character = string[i];
         GFXglyph* glyph = myFont->glyph + character - myFont->first;
