@@ -7,13 +7,13 @@
 void OLED::write_cmd(uint8_t cmd) {
     // 0x00 for write command
     uint8_t buff[] = {0x00, cmd};
-    i2c_write_blocking(I2C_PORT, OLED_ADDRESS, buff, 2, false);
+    _i2c->write_blocking(OLED_ADDRESS, buff, 2, false);
 }
 
 void OLED::write_data(uint8_t data) {
     // 0x40 for write data
     uint8_t buff[] = {0x40, data};
-    i2c_write_blocking(I2C_PORT, OLED_ADDRESS, buff, 2, false);
+    _i2c->write_blocking(OLED_ADDRESS, buff, 2, false);
 }
 
 void OLED::swap(uint8_t* x1, uint8_t* x2) {
@@ -84,29 +84,21 @@ void OLED::init() {
     write_cmd(SET_DISP | 0x01);
 }
 
-OLED::OLED(uint8_t scl,
-           uint8_t sda,
-           uint8_t width,
+OLED::OLED(uint8_t width,
            uint8_t height,
-           uint32_t freq,
            bool rev,
-           i2c_inst_t* i2c) {
+           I2C* i2c) {
     // OLED object init
 
+    _i2c = i2c;
     WIDTH = width, HEIGHT = height;
     PAGES = height / 8, BUFFERSIZE = width * PAGES;
-    OLED_SDA_PIN = sda, OLED_SCL_PIN = scl;
-    FREQUENCY = freq, I2C_PORT = i2c;
     myFont = &Dialog_bold_16;
     reversed = rev;
 
     clear();
     // i2c init
-    i2c_init(I2C_PORT, FREQUENCY);
-    gpio_set_function(OLED_SDA_PIN, GPIO_FUNC_I2C);
-    gpio_set_function(OLED_SCL_PIN, GPIO_FUNC_I2C);
-    gpio_pull_up(OLED_SDA_PIN);
-    gpio_pull_up(OLED_SCL_PIN);
+    _i2c->init();
     // Display init
     init();
 }
