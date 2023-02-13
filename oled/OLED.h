@@ -1,8 +1,8 @@
 #ifndef _OLED_H_
 #define _OLED_H_
 
+#include "hardware/i2c.h"
 #include "pico/stdlib.h"
-#include "I2C.h"
 
 #define OLED_ADDRESS 0x3C
 
@@ -45,63 +45,65 @@ struct GFXfont {
 };
 
 class OLED {
-    private:
-        I2C* _i2c;
+   private:
+    uint32_t FREQUENCY;
+    i2c_inst_t* I2C_PORT;
 
-        uint8_t WIDTH;
-        uint8_t HEIGHT;
-        uint8_t PAGES;
-        uint16_t BUFFERSIZE;
-        bool reversed;
-        uint8_t BUFFER[1024];
-        const GFXfont* myFont;
+    // Pin Definition
+    uint8_t OLED_SDA_PIN;
+    uint8_t OLED_SCL_PIN;
 
-        void init();
-        void write_cmd(uint8_t cmd);
-        void write_data(uint8_t data);
-        void swap(uint8_t* x1, uint8_t* x2);
-        bool bitRead(uint8_t character, uint8_t index);
-        void drawPixel(uint8_t x, uint8_t y);
+    uint8_t WIDTH;
+    uint8_t HEIGHT;
+    uint8_t PAGES;
+    uint16_t BUFFERSIZE;
+    bool reversed;
+    uint8_t BUFFER[1024];
+    const GFXfont* myFont;
 
-    public:
-        OLED(
-            uint8_t width,
-            uint8_t height,
-            bool reversed,
-            I2C* i2c
-        );
-        ~OLED();
-        void show();
-        void clear();
-        void isDisplay(bool inverse);
-        void isInverse(bool inverse);
-        void setContrast(uint8_t contrast);
+    void init();
+    void write_cmd(uint8_t cmd);
+    void write_data(uint8_t data);
+    void swap(uint8_t* x1, uint8_t* x2);
+    bool bitRead(uint8_t character, uint8_t index);
+    void drawPixel(uint8_t x, uint8_t y);
 
-        void drawFastHLine(uint8_t x, uint8_t y, uint8_t width);
-        void drawFastVLine(uint8_t x, uint8_t y, uint8_t height);
-        void drawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
-        void drawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
-        void drawFilledRectangle(
-            uint8_t x,
-            uint8_t y,
-            uint8_t width,
-            uint8_t height
-        );
-        void drawCircle(int16_t xc, int16_t yc, uint16_t r);
-        void drawFilledCircle(int16_t xc, int16_t yc, uint16_t r);
+   public:
+    OLED(uint8_t scl,
+         uint8_t sda,
+         uint8_t width,
+         uint8_t height,
+         uint32_t freq,
+         bool reversed,
+         i2c_inst_t* i2c);
+    ~OLED();
+    void show();
+    void clear();
+    void isDisplay(bool inverse);
+    void isInverse(bool inverse);
+    void setContrast(uint8_t contrast);
 
-        void setScrollDir(bool direction);
-        void isScroll(bool isEnable);
-        void setFont(const GFXfont* font);
-        void printChar(uint8_t x, uint8_t y, uint8_t character);
-        void print(uint8_t x, uint8_t y, uint8_t* string);
-        void drawBitmap(
-            uint8_t x,
-            uint8_t y,
-            uint8_t width,
-            uint8_t height,
-            const uint8_t* image
-        );
+    void drawFastHLine(uint8_t x, uint8_t y, uint8_t width);
+    void drawFastVLine(uint8_t x, uint8_t y, uint8_t height);
+    void drawLine(uint8_t x1, uint8_t y1, uint8_t x2, uint8_t y2);
+    void drawRectangle(uint8_t x, uint8_t y, uint8_t width, uint8_t height);
+    void drawFilledRectangle(uint8_t x,
+                             uint8_t y,
+                             uint8_t width,
+                             uint8_t height);
+    void drawCircle(int16_t xc, int16_t yc, uint16_t r);
+    void drawFilledCircle(int16_t xc, int16_t yc, uint16_t r);
+
+    void setScrollDir(bool direction);
+    void isScroll(bool isEnable);
+    void setFont(const GFXfont* font);
+    void printChar(uint8_t x, uint8_t y, uint8_t character);
+    void print(uint8_t x, uint8_t y, uint8_t* string);
+    void drawBitmap(uint8_t x,
+                    uint8_t y,
+                    uint8_t width,
+                    uint8_t height,
+                    const uint8_t* image);
 };
 
 #endif
