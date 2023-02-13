@@ -11,6 +11,7 @@ class PioI2C : public I2C
     private:
         PIO _pio;
         uint _sm;
+        uint _program_offset;
         uint _scl;
         uint _sda;
         uint32_t _freq;
@@ -19,6 +20,7 @@ class PioI2C : public I2C
         PioI2C(
             PIO pio,
             uint sm,
+            uint program_offset,
             uint scl,
             uint sda,
             uint32_t freq

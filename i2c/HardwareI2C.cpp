@@ -25,7 +25,8 @@ HardwareI2C::~HardwareI2C() {
 
 uint HardwareI2C::init() {
     printf("in HardwareI2C::init, sda=%d, scl=%d\n", _sda, _scl);
-    uint actualbaud = i2c_init(i2c0, 400 * 1000);
+    uint actualbaud = i2c_init(_i2c, 400 * 1000);
+    printf("actualbaud %d", actualbaud);
 
     gpio_set_function(_sda, GPIO_FUNC_I2C);
     gpio_set_function(_scl, GPIO_FUNC_I2C);

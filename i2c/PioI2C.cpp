@@ -10,12 +10,14 @@
 PioI2C::PioI2C(
     PIO pio,
     uint sm,
+    uint program_offset,
     uint scl,
     uint sda,
     uint32_t freq
 ) {
     _pio = pio;
     _sm = sm;
+    _program_offset = program_offset;
     _scl = scl; 
     _sda = sda;
     _freq = freq;
@@ -24,10 +26,9 @@ PioI2C::PioI2C(
 PioI2C::~PioI2C() { }
 
 uint PioI2C::init() {
-    const uint offset = pio_add_program(_pio, &i2c_program);
-    i2c_program_init(_pio, _sm, offset, _sda, _scl);
+    i2c_program_init(_pio, _sm, _program_offset, _sda, _scl);
     
-    return offset;
+    return 0;
 }
 
 int PioI2C::write_blocking(
