@@ -34,8 +34,10 @@ add_subdirectory(oled)
 
 target_link_libraries(${target_project} PRIVATE
     pico_stdlib
+    pico_util
     hardware_i2c
     hardware_pio
+    hardware_rtc
     pico_cyw43_arch_none
     i2c
     oled

@@ -12,6 +12,8 @@
 
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
+#include "pico/util/datetime.h"
+#include "hardware/rtc.h"
 
 #include "MixerModel.h"
 
@@ -47,29 +49,53 @@ static void blink_led(void)
     }
 }
 
-void drawChannelOled(OLED oled, Channel chan)
+void drawChannelOled(OLED *oled, Channel *chan)
 {
-    if (chan.EncoderPressed) {
+    static int x = 0;
+    x++;
+    x = x % 10;
+
+    oled->clear();
+    // char datetime_buf[256];
+    // char *datetime_str = &datetime_buf[0];
+
+    // datetime_t current;
+    // rtc_get_datetime(&current);
+    // datetime_to_str(datetime_str, sizeof(datetime_buf), &current);
+
+    if (chan->EncoderPressed) {
         uint8_t string1[] = "X";
-        oled.print(0, 0, string1);
+        oled->print(x, 0, string1);
     }
-    if (chan.Button1Pressed) {
+    if (chan->Button1Pressed) {
         uint8_t string2[] = "Y";
-        oled.print(0, 16, string2);
+        oled->print(x, 16, string2);
     }
-    if (chan.Button2Pressed) {
+    if (chan->Button2Pressed) {
         uint8_t string3[] = "Z";
-        oled.print(0, 32, string3);
+        oled->print(x, 32, string3);
     }
  
-    oled.show();
+    oled->show();
 }
 
 int main() {
     board_init();
     stdio_init_all();
     tusb_init();
-    
+
+    datetime_t t = {
+        .year  = 2023,
+        .month = 02,
+        .day   = 18,
+        .dotw  = 5, // 0 is Sunday, so 5 is Friday
+        .hour  = 15,
+        .min   = 45,
+        .sec   = 00
+    };
+    rtc_init();
+    rtc_set_datetime(&t);
+
     if (cyw43_arch_init()) 
     {
         printf("Wifi init failed");
@@ -91,33 +117,33 @@ int main() {
     I2C* i2c_u1 = &pio_u1;
     OLED oled_u1(128, 64, false, i2c_u1);
     
-    PioI2C pio_u2(pio0, 1u, offset0, 13, 12, 400 * 1000);
-    I2C* i2c_u2 = &pio_u2;
-    OLED oled_u2(128, 64, false, i2c_u2);
+    // PioI2C pio_u2(pio0, 1u, offset0, 13, 12, 400 * 1000);
+    // I2C* i2c_u2 = &pio_u2;
+    // OLED oled_u2(128, 64, false, i2c_u2);
     
-    PioI2C pio_u3(pio0, 2u, offset0, 11, 10, 400 * 1000);
-    I2C* i2c_u3 = &pio_u3;
-    OLED oled_u3(128, 64, false, i2c_u3);
+    // PioI2C pio_u3(pio0, 2u, offset0, 11, 10, 400 * 1000);
+    // I2C* i2c_u3 = &pio_u3;
+    // OLED oled_u3(128, 64, false, i2c_u3);
         
-    PioI2C pio_u4(pio0, 3u, offset0,  9,  8, 400 * 1000);
-    I2C* i2c_u4 = &pio_u4;
-    OLED oled_u4(128, 64, false, i2c_u4);
+    // PioI2C pio_u4(pio0, 3u, offset0,  9,  8, 400 * 1000);
+    // I2C* i2c_u4 = &pio_u4;
+    // OLED oled_u4(128, 64, false, i2c_u4);
 
     PioI2C pio_u5(pio1, 0u, offset1,  7,  6, 400 * 1000);
     I2C* i2c_u5 = &pio_u5;
     OLED oled_u5(128, 64, false, i2c_u5);
     
-    PioI2C pio_u6(pio1, 1u, offset1,  5,  4, 400 * 1000);
-    I2C* i2c_u6 = &pio_u6;
-    OLED oled_u6(128, 64, false, i2c_u6);
+    // PioI2C pio_u6(pio1, 1u, offset1,  5,  4, 400 * 1000);
+    // I2C* i2c_u6 = &pio_u6;
+    // OLED oled_u6(128, 64, false, i2c_u6);
 
-    PioI2C pio_u7(pio1, 2u, offset1, 15, 14, 400 * 1000);
-    I2C* i2c_u7 = &pio_u7;
-    OLED oled_u7(128, 64, false, i2c_u7);
+    // PioI2C pio_u7(pio1, 2u, offset1, 15, 14, 400 * 1000);
+    // I2C* i2c_u7 = &pio_u7;
+    // OLED oled_u7(128, 64, false, i2c_u7);
 
-    PioI2C pio_u8(pio1, 3u, offset1, 17, 16, 400 * 1000);
-    I2C* i2c_u8 = &pio_u8;
-    OLED oled_u8(128, 64, false, i2c_u8);
+    // PioI2C pio_u8(pio1, 3u, offset1, 17, 16, 400 * 1000);
+    // I2C* i2c_u8 = &pio_u8;
+    // OLED oled_u8(128, 64, false, i2c_u8);
 
 
     // HardwareI2C hw_u9(19, 18, 400 * 1000, i2c1);
@@ -137,26 +163,30 @@ int main() {
 
     printf("waiting for MIDI events\n");
     while (1) {
-        tuh_task();
+        // tuh_task();
 
         blink_led();
-        bool connected = midi_dev_addr != 0 && tuh_midi_configured(midi_dev_addr);
+        // bool connected = midi_dev_addr != 0 && tuh_midi_configured(midi_dev_addr);
 
-        if (connected)
-            tuh_midi_stream_flush(midi_dev_addr);
-        poll_usb_rx(connected);
+        // if (connected)
+        //     tuh_midi_stream_flush(midi_dev_addr);
+        // poll_usb_rx(connected);
 
-        drawChannelOled(oled_u1, chan1);
-        drawChannelOled(oled_u2, chan2);
-        drawChannelOled(oled_u3, chan1);
-        drawChannelOled(oled_u4, chan2);
-        drawChannelOled(oled_u5, chan1);
-        drawChannelOled(oled_u6, chan2);
-        drawChannelOled(oled_u7, chan1);
-        drawChannelOled(oled_u8, chan2);
-        // drawChannelOled(oled_u9);
+
+        drawChannelOled(&oled_u1, &chan1);
+        // drawChannelOled(oled_u2, chan2);
+        // drawChannelOled(oled_u3, chan1);
+        // drawChannelOled(oled_u4, chan2);
+        drawChannelOled(&oled_u5, &chan2);
+        // drawChannelOled(oled_u6, chan2);
+        // drawChannelOled(oled_u7, chan1);
+        // drawChannelOled(oled_u8, chan2);
+        // drawChannelOled(oled_u9, chan1);
         // drawChannelOled(oled_u10);
         chan1.Button1Pressed = !chan1.Button1Pressed;
+        chan2.Button2Pressed = !chan1.Button2Pressed;
+
+        sleep_ms(100);
     }
 
     return 0;
