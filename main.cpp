@@ -88,52 +88,53 @@ int main() {
     PioI2C pio_u1(pio0, 0u, offset0,  3,  2, 400 * 1000);
     I2C* i2c_u1 = &pio_u1;
     OLED oled_u1(128, 64, false, i2c_u1);
-    drawChannelOled(oled_u1);
     
     PioI2C pio_u2(pio0, 1u, offset0, 13, 12, 400 * 1000);
     I2C* i2c_u2 = &pio_u2;
     OLED oled_u2(128, 64, false, i2c_u2);
-    drawChannelOled(oled_u2);
     
     PioI2C pio_u3(pio0, 2u, offset0, 11, 10, 400 * 1000);
     I2C* i2c_u3 = &pio_u3;
     OLED oled_u3(128, 64, false, i2c_u3);
-    drawChannelOled(oled_u3);
         
     PioI2C pio_u4(pio0, 3u, offset0,  9,  8, 400 * 1000);
     I2C* i2c_u4 = &pio_u4;
     OLED oled_u4(128, 64, false, i2c_u4);
-    drawChannelOled(oled_u4);
 
     PioI2C pio_u5(pio1, 0u, offset1,  7,  6, 400 * 1000);
     I2C* i2c_u5 = &pio_u5;
     OLED oled_u5(128, 64, false, i2c_u5);
-    drawChannelOled(oled_u5);
     
     PioI2C pio_u6(pio1, 1u, offset1,  5,  4, 400 * 1000);
     I2C* i2c_u6 = &pio_u6;
     OLED oled_u6(128, 64, false, i2c_u6);
-    drawChannelOled(oled_u6);
 
     PioI2C pio_u7(pio1, 2u, offset1, 15, 14, 400 * 1000);
     I2C* i2c_u7 = &pio_u7;
     OLED oled_u7(128, 64, false, i2c_u7);
-    drawChannelOled(oled_u7);
 
     PioI2C pio_u8(pio1, 3u, offset1, 17, 16, 400 * 1000);
     I2C* i2c_u8 = &pio_u8;
     OLED oled_u8(128, 64, false, i2c_u8);
-    drawChannelOled(oled_u8);
 
 
     HardwareI2C hw_u9(19, 18, 400 * 1000, i2c1);
     I2C* i2c_u9 = &hw_u9;
     OLED oled_u9(128, 64, false, i2c_u9);
-    drawChannelOled(oled_u9);
 
     HardwareI2C hw_u10(21, 20, 400 * 1000, i2c0);
     I2C* i2c_u10 = &hw_u10;
     OLED oled_u10(128, 64, false, i2c_u10);
+
+    drawChannelOled(oled_u1);
+    drawChannelOled(oled_u2);
+    drawChannelOled(oled_u3);
+    drawChannelOled(oled_u4);
+    drawChannelOled(oled_u5);
+    drawChannelOled(oled_u6);
+    drawChannelOled(oled_u7);
+    drawChannelOled(oled_u8);
+    drawChannelOled(oled_u9);
     drawChannelOled(oled_u10);
 
 
