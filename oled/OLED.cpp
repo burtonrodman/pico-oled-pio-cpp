@@ -10,10 +10,21 @@ void OLED::write_cmd(uint8_t cmd) {
     _i2c->write_blocking(OLED_ADDRESS, buff, 2, false);
 }
 
-void OLED::write_data(uint8_t data) {
+void OLED::write_data(uint8_t data[], uint len) {
     // 0x40 for write data
-    uint8_t buff[] = {0x40, data};
-    _i2c->write_blocking(OLED_ADDRESS, buff, 2, false);
+    uint current = 0;
+    const int buffsize = 64;
+    uint8_t buff[buffsize + 1];
+    buff[0] = 0x40;
+
+    while ((len - current) > 0) {
+        uint remaining = MIN(len - current, 32);
+        for (int i = 0; i < remaining; i++) {
+            buff[i + 1] = data[current];
+            current++;
+        }
+        _i2c->write_blocking(OLED_ADDRESS, buff, remaining + 1, false);
+    }
 }
 
 void OLED::swap(uint8_t* x1, uint8_t* x2) {
@@ -133,9 +144,7 @@ void OLED::show() {
     write_cmd(0);
     write_cmd(PAGES - 1);
 
-    for (uint16_t i = 0; i < BUFFERSIZE; i++) {
-        write_data(BUFFER[i]);
-    }
+    write_data(BUFFER, BUFFERSIZE);
 }
 
 void OLED::drawPixel(uint8_t x, uint8_t y) {

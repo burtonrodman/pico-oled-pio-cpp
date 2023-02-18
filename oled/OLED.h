@@ -58,7 +58,7 @@ class OLED {
 
     void init();
     void write_cmd(uint8_t cmd);
-    void write_data(uint8_t data);
+    void write_data(uint8_t data[], uint len);
     void swap(uint8_t* x1, uint8_t* x2);
     bool bitRead(uint8_t character, uint8_t index);
     void drawPixel(uint8_t x, uint8_t y);
