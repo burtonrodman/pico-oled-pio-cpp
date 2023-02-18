@@ -5,5 +5,5 @@ The abstraction currently only defines `init` and `write_blocking` operations --
 
 # Status
 - *Hardware* - working
-- *PIO* - partial, blocked on compiler errors in PIO code
+- *PIO* - debugging - locks when multiple displays enabled
 - *Software* - not-started
