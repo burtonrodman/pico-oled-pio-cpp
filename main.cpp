@@ -47,19 +47,21 @@ static void blink_led(void)
     }
 }
 
-void drawChannelOled(OLED oled)
+void drawChannelOled(OLED oled, Channel chan)
 {
-    oled.drawCircle(100, 16, 14);
-    oled.drawFilledCircle(100, 16, 10);
-    // Print defaule font string
-    uint8_t string1[] = "sup";
-    oled.print(0, 35, string1);
-    // Print custom font string
-    oled.setFont(&Cherry_Cream_Soda_Regular_16);
-    uint8_t string2[] = "yo!";
-    oled.print(60, 32, string2);
-    // Draw a line
-    oled.drawFastHLine(0, 60, 128);
+    if (chan.EncoderPressed) {
+        uint8_t string1[] = "X";
+        oled.print(0, 0, string1);
+    }
+    if (chan.Button1Pressed) {
+        uint8_t string2[] = "Y";
+        oled.print(0, 16, string2);
+    }
+    if (chan.Button2Pressed) {
+        uint8_t string3[] = "Z";
+        oled.print(0, 32, string3);
+    }
+ 
     oled.show();
 }
 
@@ -118,25 +120,20 @@ int main() {
     OLED oled_u8(128, 64, false, i2c_u8);
 
 
-    HardwareI2C hw_u9(19, 18, 400 * 1000, i2c1);
-    I2C* i2c_u9 = &hw_u9;
-    OLED oled_u9(128, 64, false, i2c_u9);
+    // HardwareI2C hw_u9(19, 18, 400 * 1000, i2c1);
+    // I2C* i2c_u9 = &hw_u9;
+    // OLED oled_u9(128, 64, false, i2c_u9);
 
-    HardwareI2C hw_u10(21, 20, 400 * 1000, i2c0);
-    I2C* i2c_u10 = &hw_u10;
-    OLED oled_u10(128, 64, false, i2c_u10);
+    // HardwareI2C hw_u10(21, 20, 400 * 1000, i2c0);
+    // I2C* i2c_u10 = &hw_u10;
+    // OLED oled_u10(128, 64, false, i2c_u10);
 
-    drawChannelOled(oled_u1);
-    drawChannelOled(oled_u2);
-    drawChannelOled(oled_u3);
-    drawChannelOled(oled_u4);
-    drawChannelOled(oled_u5);
-    drawChannelOled(oled_u6);
-    drawChannelOled(oled_u7);
-    drawChannelOled(oled_u8);
-    drawChannelOled(oled_u9);
-    drawChannelOled(oled_u10);
-
+    Channel chan1 = {
+        0, Single, true, true, true, true, true
+    };
+    Channel chan2 = {
+        0, Single, true, true, true, true, true
+    };
 
     printf("waiting for MIDI events\n");
     while (1) {
@@ -148,6 +145,18 @@ int main() {
         if (connected)
             tuh_midi_stream_flush(midi_dev_addr);
         poll_usb_rx(connected);
+
+        drawChannelOled(oled_u1, chan1);
+        drawChannelOled(oled_u2, chan2);
+        drawChannelOled(oled_u3, chan1);
+        drawChannelOled(oled_u4, chan2);
+        drawChannelOled(oled_u5, chan1);
+        drawChannelOled(oled_u6, chan2);
+        drawChannelOled(oled_u7, chan1);
+        drawChannelOled(oled_u8, chan2);
+        // drawChannelOled(oled_u9);
+        // drawChannelOled(oled_u10);
+        chan1.Button1Pressed = !chan1.Button1Pressed;
     }
 
     return 0;
