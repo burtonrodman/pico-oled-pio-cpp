@@ -6,7 +6,6 @@ add_library(i2c
     pio_i2c.h
     PioI2C.cpp
     PioI2C.h
-    SoftI2C.cpp
 )
 
 pico_generate_pio_header(i2c ${CMAKE_CURRENT_LIST_DIR}/i2c.pio)

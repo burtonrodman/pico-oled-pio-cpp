@@ -37,16 +37,10 @@ int PioI2C::write_blocking(
     uint len,
     bool nostop
 ) {
-    static int writecnt;
-
-    writecnt++;
     int err = pio_i2c_write_blocking(_pio, _sm, addr, src, len);
     if (err < 0) {
-        printf("!");
         return err;
     } else {
-        if (writecnt % 10 == 0)
-            printf(".");
         return len;
     }
 }
