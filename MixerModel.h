@@ -15,6 +15,7 @@ enum EncoderTypes
 struct Channel
 {
     public:
+        uint8_t ChannelNumber = 0;
         uint8_t EncoderValue = 0;
         EncoderTypes EncoderType = Single;
         bool EncoderPressed = false;
@@ -24,6 +25,11 @@ struct Channel
 
         bool Button2Pressed = false;
         bool Button2Lit = false;
+
+        uint8_t cx = 32;
+        uint8_t cy = 32;
+        int dirx = 1;
+        int diry = 1;
 };
 
 struct MasterSection

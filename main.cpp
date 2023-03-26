@@ -12,14 +12,13 @@
 
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
-#include "pico/util/datetime.h"
-#include "hardware/rtc.h"
 
 #include "MixerModel.h"
 
 #include "tusb.h"
 #include "bsp/board.h"
 #include "class/midi/midi_host.h"
+
 
 static uint8_t midi_dev_addr = 0;
 
@@ -51,30 +50,20 @@ static void blink_led(void)
 
 void drawChannelOled(OLED *oled, Channel *chan)
 {
-    static int x = 0;
-    x++;
-    x = x % 10;
-
     oled->clear();
-    // char datetime_buf[256];
-    // char *datetime_str = &datetime_buf[0];
 
-    // datetime_t current;
-    // rtc_get_datetime(&current);
-    // datetime_to_str(datetime_str, sizeof(datetime_buf), &current);
+    if (chan->dirx == 1 && chan->cx > 96) chan->dirx = -1;
+    if (chan->dirx == -1 && chan->cx < 32) chan->dirx = 1;
+    if (chan->diry == 1 && chan->cy > 64) chan->diry = -1;
+    if (chan->diry == -1 && chan->cy < 32) chan->diry = 1;
 
-    if (chan->EncoderPressed) {
-        uint8_t string1[] = "X";
-        oled->print(x, 0, string1);
-    }
-    if (chan->Button1Pressed) {
-        uint8_t string2[] = "Y";
-        oled->print(x, 16, string2);
-    }
-    if (chan->Button2Pressed) {
-        uint8_t string3[] = "Z";
-        oled->print(x, 32, string3);
-    }
+    chan->cx += chan->dirx;
+    chan->cy += chan->diry;
+
+    oled->drawCircle(chan->cx, chan->cy, 16);
+
+    uint8_t string2[] = "Y";
+    oled->print(chan->cx, chan->cy, string2);
  
     oled->show();
 }
@@ -83,18 +72,6 @@ int main() {
     board_init();
     stdio_init_all();
     tusb_init();
-
-    datetime_t t = {
-        .year  = 2023,
-        .month = 02,
-        .day   = 18,
-        .dotw  = 5, // 0 is Sunday, so 5 is Friday
-        .hour  = 15,
-        .min   = 45,
-        .sec   = 00
-    };
-    rtc_init();
-    rtc_set_datetime(&t);
 
     if (cyw43_arch_init()) 
     {
@@ -108,57 +85,89 @@ int main() {
     // cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
     // sleep_ms(50);
 
+
     const uint offset0 = pio_add_program(pio0, &i2c_program);
     const uint offset1 = pio_add_program(pio1, &i2c_program);
 
     printf("initializing displays\n");
 
-    PioI2C pio_u1(pio0, 0u, offset0,  3,  2, 400 * 1000);
+    uint sm_u1 = pio_claim_unused_sm(pio0, false);
+    PioI2C pio_u1(pio0, sm_u1, offset0,  3,  2, 400 * 1000);
     I2C* i2c_u1 = &pio_u1;
     OLED oled_u1(128, 64, false, i2c_u1);
     
-    // PioI2C pio_u2(pio0, 1u, offset0, 13, 12, 400 * 1000);
-    // I2C* i2c_u2 = &pio_u2;
-    // OLED oled_u2(128, 64, false, i2c_u2);
+    uint sm_u2 = pio_claim_unused_sm(pio0, false);
+    PioI2C pio_u2(pio0, sm_u2, offset0, 13, 12, 400 * 1000);
+    I2C* i2c_u2 = &pio_u2;
+    OLED oled_u2(128, 64, false, i2c_u2);
     
-    // PioI2C pio_u3(pio0, 2u, offset0, 11, 10, 400 * 1000);
-    // I2C* i2c_u3 = &pio_u3;
-    // OLED oled_u3(128, 64, false, i2c_u3);
+    uint sm_u3 = pio_claim_unused_sm(pio0, false);
+    PioI2C pio_u3(pio0, sm_u3, offset0, 11, 10, 400 * 1000);
+    I2C* i2c_u3 = &pio_u3;
+    OLED oled_u3(128, 64, false, i2c_u3);
         
-    // PioI2C pio_u4(pio0, 3u, offset0,  9,  8, 400 * 1000);
-    // I2C* i2c_u4 = &pio_u4;
-    // OLED oled_u4(128, 64, false, i2c_u4);
+    uint sm_u4 = pio_claim_unused_sm(pio0, false);
+    PioI2C pio_u4(pio0, sm_u4, offset0,  9,  8, 400 * 1000);
+    I2C* i2c_u4 = &pio_u4;
+    OLED oled_u4(128, 64, false, i2c_u4);
 
-    PioI2C pio_u5(pio1, 0u, offset1,  7,  6, 400 * 1000);
+    uint sm_u5 = pio_claim_unused_sm(pio1, false);
+    PioI2C pio_u5(pio1, sm_u5, offset1, 19, 18, 400 * 1000);
     I2C* i2c_u5 = &pio_u5;
     OLED oled_u5(128, 64, false, i2c_u5);
     
-    // PioI2C pio_u6(pio1, 1u, offset1,  5,  4, 400 * 1000);
-    // I2C* i2c_u6 = &pio_u6;
-    // OLED oled_u6(128, 64, false, i2c_u6);
+    uint sm_u6 = pio_claim_unused_sm(pio1, false);
+    PioI2C pio_u6(pio1, sm_u6, offset1,  5,  4, 400 * 1000);
+    I2C* i2c_u6 = &pio_u6;
+    OLED oled_u6(128, 64, false, i2c_u6);
 
-    // PioI2C pio_u7(pio1, 2u, offset1, 15, 14, 400 * 1000);
-    // I2C* i2c_u7 = &pio_u7;
-    // OLED oled_u7(128, 64, false, i2c_u7);
+    uint sm_u7 = pio_claim_unused_sm(pio1, false);
+    PioI2C pio_u7(pio1, sm_u7, offset1, 15, 14, 400 * 1000);
+    I2C* i2c_u7 = &pio_u7;
+    OLED oled_u7(128, 64, false, i2c_u7);
 
-    // PioI2C pio_u8(pio1, 3u, offset1, 17, 16, 400 * 1000);
-    // I2C* i2c_u8 = &pio_u8;
-    // OLED oled_u8(128, 64, false, i2c_u8);
+    uint sm_u8 = pio_claim_unused_sm(pio1, false);
+    PioI2C pio_u8(pio1, sm_u8, offset1, 17, 16, 400 * 1000);
+    I2C* i2c_u8 = &pio_u8;
+    OLED oled_u8(128, 64, false, i2c_u8);
 
+    HardwareI2C hw_u9(7, 6, 400 * 1000, i2c1);
+    I2C* i2c_u9 = &hw_u9;
+    OLED oled_u9(128, 64, false, i2c_u9);
 
-    // HardwareI2C hw_u9(19, 18, 400 * 1000, i2c1);
-    // I2C* i2c_u9 = &hw_u9;
-    // OLED oled_u9(128, 64, false, i2c_u9);
-
-    // HardwareI2C hw_u10(21, 20, 400 * 1000, i2c0);
-    // I2C* i2c_u10 = &hw_u10;
-    // OLED oled_u10(128, 64, false, i2c_u10);
+    HardwareI2C hw_u10(21, 20, 400 * 1000, i2c0);
+    I2C* i2c_u10 = &hw_u10;
+    OLED oled_u10(128, 64, false, i2c_u10);
 
     Channel chan1 = {
-        0, Single, true, true, true, true, true
+        1, 0, Single, true, true, true, true, true
     };
     Channel chan2 = {
-        0, Single, true, true, true, true, true
+        2, 0, Single, true, true, true, true, true
+    };
+    Channel chan3 = {
+        3, 0, Single, true, true, true, true, true
+    };
+    Channel chan4 = {
+        4, 0, Single, true, true, true, true, true
+    };
+    Channel chan5 = {
+        5, 0, Single, true, true, true, true, true
+    };
+    Channel chan6 = {
+        6, 0, Single, true, true, true, true, true
+    };
+    Channel chan7 = {
+        7, 0, Single, true, true, true, true, true
+    };
+    Channel chan8 = {
+        8, 0, Single, true, true, true, true, true
+    };
+    Channel chan9 = {
+        9, 0, Single, true, true, true, true, true
+    };
+    Channel chan10 = {
+        10, 0, Single, true, true, true, true, true
     };
 
     printf("waiting for MIDI events\n");
@@ -174,19 +183,25 @@ int main() {
 
 
         drawChannelOled(&oled_u1, &chan1);
-        // drawChannelOled(oled_u2, chan2);
-        // drawChannelOled(oled_u3, chan1);
-        // drawChannelOled(oled_u4, chan2);
-        drawChannelOled(&oled_u5, &chan2);
-        // drawChannelOled(oled_u6, chan2);
-        // drawChannelOled(oled_u7, chan1);
-        // drawChannelOled(oled_u8, chan2);
-        // drawChannelOled(oled_u9, chan1);
-        // drawChannelOled(oled_u10);
-        chan1.Button1Pressed = !chan1.Button1Pressed;
-        chan2.Button2Pressed = !chan1.Button2Pressed;
+        drawChannelOled(&oled_u2, &chan2);
+        drawChannelOled(&oled_u3, &chan3);
+        drawChannelOled(&oled_u4, &chan4);
+        drawChannelOled(&oled_u5, &chan5);
+        drawChannelOled(&oled_u6, &chan6);
+        drawChannelOled(&oled_u7, &chan7);
+        drawChannelOled(&oled_u8, &chan8);
+        drawChannelOled(&oled_u9, &chan9);
+        drawChannelOled(&oled_u10, &chan10);
+        // chan1.Button1Pressed = !chan1.Button1Pressed;
+        // chan2.Button2Pressed = !chan2.Button2Pressed;
+        // chan3.Button1Pressed = !chan3.Button1Pressed;
+        // chan4.Button2Pressed = !chan4.Button2Pressed;
+        // chan5.Button1Pressed = !chan5.Button1Pressed;
+        // chan6.Button2Pressed = !chan6.Button2Pressed;
+        // chan7.Button1Pressed = !chan7.Button1Pressed;
+        // chan8.Button2Pressed = !chan8.Button2Pressed;
 
-        sleep_ms(100);
+        sleep_ms(10);
     }
 
     return 0;

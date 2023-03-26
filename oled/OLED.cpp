@@ -6,14 +6,14 @@
 
 void OLED::write_cmd(uint8_t cmd) {
     // 0x00 for write command
-    uint8_t buff[] = {0x00, cmd};
+    uint8_t buff[] = {0x80, cmd};
     _i2c->write_blocking(OLED_ADDRESS, buff, 2, false);
 }
 
 void OLED::write_data(uint8_t data[], uint len) {
     // 0x40 for write data
     uint current = 0;
-    const int buffsize = 64;
+    const int buffsize = 1024;
     uint8_t buff[buffsize + 1];
     buff[0] = 0x40;
 
