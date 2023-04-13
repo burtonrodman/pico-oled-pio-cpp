@@ -21,6 +21,7 @@
 
 
 static uint8_t midi_dev_addr = 0;
+static uint8_t lastMidiMessage[4];
 
 static void poll_usb_rx(bool connected)
 {
@@ -172,26 +173,26 @@ int main() {
 
     printf("waiting for MIDI events\n");
     while (1) {
-        // tuh_task();
+        tuh_task();
 
         blink_led();
-        // bool connected = midi_dev_addr != 0 && tuh_midi_configured(midi_dev_addr);
+        bool connected = midi_dev_addr != 0 && tuh_midi_configured(midi_dev_addr);
 
-        // if (connected)
-        //     tuh_midi_stream_flush(midi_dev_addr);
-        // poll_usb_rx(connected);
+        if (connected)
+            tuh_midi_stream_flush(midi_dev_addr);
+        poll_usb_rx(connected);
 
 
-        drawChannelOled(&oled_u1, &chan1);
-        drawChannelOled(&oled_u2, &chan2);
-        drawChannelOled(&oled_u3, &chan3);
-        drawChannelOled(&oled_u4, &chan4);
-        drawChannelOled(&oled_u5, &chan5);
-        drawChannelOled(&oled_u6, &chan6);
-        drawChannelOled(&oled_u7, &chan7);
-        drawChannelOled(&oled_u8, &chan8);
-        drawChannelOled(&oled_u9, &chan9);
-        drawChannelOled(&oled_u10, &chan10);
+        drawChannelOled(&oled_u1, &chan1, connected);
+        drawChannelOled(&oled_u2, &chan2, connected);
+        drawChannelOled(&oled_u3, &chan3, connected);
+        drawChannelOled(&oled_u4, &chan4, connected);
+        drawChannelOled(&oled_u5, &chan5, connected);
+        drawChannelOled(&oled_u6, &chan6, connected);
+        drawChannelOled(&oled_u7, &chan7, connected);
+        drawChannelOled(&oled_u8, &chan8, connected);
+        drawChannelOled(&oled_u9, &chan9, connected);
+        drawChannelOled(&oled_u10, &chan10, connected);
         // chan1.Button1Pressed = !chan1.Button1Pressed;
         // chan2.Button2Pressed = !chan2.Button2Pressed;
         // chan3.Button1Pressed = !chan3.Button1Pressed;
@@ -201,7 +202,7 @@ int main() {
         // chan7.Button1Pressed = !chan7.Button1Pressed;
         // chan8.Button2Pressed = !chan8.Button2Pressed;
 
-        sleep_ms(10);
+        // sleep_ms(10);
     }
 
     return 0;
@@ -223,6 +224,11 @@ void tuh_midi_mount_cb(uint8_t dev_addr, uint8_t in_ep, uint8_t out_ep, uint8_t 
   printf("MIDI device address = %u, IN endpoint %u has %u cables, OUT endpoint %u has %u cables\r\n",
       dev_addr, in_ep & 0xf, num_cables_rx, out_ep & 0xf, num_cables_tx);
 
+  lastMidiMessage[0] = 255;
+  lastMidiMessage[1] = 255;
+  lastMidiMessage[2] = 255;
+  lastMidiMessage[3] = 255;
+
   if (midi_dev_addr == 0) {
     // then no MIDI device is currently connected
     midi_dev_addr = dev_addr;
@@ -235,6 +241,11 @@ void tuh_midi_mount_cb(uint8_t dev_addr, uint8_t in_ep, uint8_t out_ep, uint8_t 
 // Invoked when device with hid interface is un-mounted
 void tuh_midi_umount_cb(uint8_t dev_addr, uint8_t instance)
 {
+  lastMidiMessage[0] = 0;
+  lastMidiMessage[1] = 0;
+  lastMidiMessage[2] = 0;
+  lastMidiMessage[3] = 0;
+  
   if (dev_addr == midi_dev_addr) {
     midi_dev_addr = 0;
     printf("MIDI device address = %d, instance = %d is unmounted\r\n", dev_addr, instance);
@@ -257,11 +268,11 @@ void tuh_midi_rx_cb(uint8_t dev_addr, uint32_t num_packets)
                 if (bytes_read == 0)
                     return;
                 if (cable_num == 0) {
-                    printf("received: ");
+                    uint32_t nwritten = tuh_midi_stream_write(dev_addr, cable_num, buffer, bytes_read);
                     for (int i = 0; i < bytes_read; i++) {
-                        printf("%02x ", buffer[i]);
+                        lastMidiMessage[i] = buffer[i];
+                        // printf("%02x ", buffer[i]);
                     }
-                    printf("\n");
                 }
             }
         }
