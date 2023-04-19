@@ -21,8 +21,14 @@ add_executable(${target_project})
 
 target_sources(${target_project} PUBLIC
     main.cpp
-    MixerModel.h
     tusb_config.h
+
+    models/ChannelModel.h
+    models/MixerModel.h
+
+    renderer/Renderer.h
+    renderer/ChannelRenderer.h
+    renderer/ChannelRenderer.cpp
 )
 
 set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -fpermissive)

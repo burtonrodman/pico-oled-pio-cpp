@@ -1,5 +1,5 @@
-#ifndef _MixerModel_H_
-#define _MixerModel_H_
+#ifndef _ChannelModel_H_
+#define _ChannelModel_H_
 
 #include "pico/stdlib.h"
 
@@ -12,7 +12,7 @@ enum EncoderTypes
     Trim
 };
 
-struct Channel
+struct ChannelModel
 {
     public:
         uint8_t ChannelNumber = 0;
@@ -30,25 +30,8 @@ struct Channel
         uint8_t cy = 32;
         int dirx = 1;
         int diry = 1;
-};
 
-struct MasterSection
-{
-    public:
-        uint8_t FaderValue = 0;
-
-        bool LayerAButtonPressed = false;
-        bool LayerAButtonLit = false;
-
-        bool LayerBButtonPressed = false;
-        bool LayerBButtonLit = false;
-};
-
-struct MixerModel
-{
-    public:
-        MasterSection* Master;        
-        Channel* Channels[8]; 
+        uint8_t lastMidiMessage[4];
 };
 
 #endif

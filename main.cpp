@@ -13,7 +13,7 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
 
-#include "MixerModel.h"
+#include "../models/ChannelModel.h"
 
 #include "tusb.h"
 #include "bsp/board.h"
@@ -21,7 +21,6 @@
 
 
 static uint8_t midi_dev_addr = 0;
-static uint8_t lastMidiMessage[4];
 
 static void poll_usb_rx(bool connected)
 {
@@ -49,24 +48,8 @@ static void blink_led(void)
     }
 }
 
-void drawChannelOled(OLED *oled, Channel *chan)
-{
-    oled->clear();
-
-    if (chan->dirx == 1 && chan->cx > 96) chan->dirx = -1;
-    if (chan->dirx == -1 && chan->cx < 32) chan->dirx = 1;
-    if (chan->diry == 1 && chan->cy > 64) chan->diry = -1;
-    if (chan->diry == -1 && chan->cy < 32) chan->diry = 1;
-
-    chan->cx += chan->dirx;
-    chan->cy += chan->diry;
-
-    oled->drawCircle(chan->cx, chan->cy, 16);
-
-    uint8_t string2[] = "Y";
-    oled->print(chan->cx, chan->cy, string2);
- 
-    oled->show();
+OLED CreateOledPio() {
+    // do objects created here get destroyed too early?
 }
 
 int main() {
@@ -140,34 +123,34 @@ int main() {
     I2C* i2c_u10 = &hw_u10;
     OLED oled_u10(128, 64, false, i2c_u10);
 
-    Channel chan1 = {
+    ChannelModel chan1 = {
         1, 0, Single, true, true, true, true, true
     };
-    Channel chan2 = {
+    ChannelModel chan2 = {
         2, 0, Single, true, true, true, true, true
     };
-    Channel chan3 = {
+    ChannelModel chan3 = {
         3, 0, Single, true, true, true, true, true
     };
-    Channel chan4 = {
+    ChannelModel chan4 = {
         4, 0, Single, true, true, true, true, true
     };
-    Channel chan5 = {
+    ChannelModel chan5 = {
         5, 0, Single, true, true, true, true, true
     };
-    Channel chan6 = {
+    ChannelModel chan6 = {
         6, 0, Single, true, true, true, true, true
     };
-    Channel chan7 = {
+    ChannelModel chan7 = {
         7, 0, Single, true, true, true, true, true
     };
-    Channel chan8 = {
+    ChannelModel chan8 = {
         8, 0, Single, true, true, true, true, true
     };
-    Channel chan9 = {
+    ChannelModel chan9 = {
         9, 0, Single, true, true, true, true, true
     };
-    Channel chan10 = {
+    ChannelModel chan10 = {
         10, 0, Single, true, true, true, true, true
     };
 
@@ -193,16 +176,6 @@ int main() {
         drawChannelOled(&oled_u8, &chan8, connected);
         drawChannelOled(&oled_u9, &chan9, connected);
         drawChannelOled(&oled_u10, &chan10, connected);
-        // chan1.Button1Pressed = !chan1.Button1Pressed;
-        // chan2.Button2Pressed = !chan2.Button2Pressed;
-        // chan3.Button1Pressed = !chan3.Button1Pressed;
-        // chan4.Button2Pressed = !chan4.Button2Pressed;
-        // chan5.Button1Pressed = !chan5.Button1Pressed;
-        // chan6.Button2Pressed = !chan6.Button2Pressed;
-        // chan7.Button1Pressed = !chan7.Button1Pressed;
-        // chan8.Button2Pressed = !chan8.Button2Pressed;
-
-        // sleep_ms(10);
     }
 
     return 0;
