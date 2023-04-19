@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+firmware = 'build/pico_oled_pio_cpp.hex'
+elf = 'build/pico_oled_pio_cpp.elf'
