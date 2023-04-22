@@ -183,16 +183,16 @@ int main() {
         poll_usb_rx(connected);
 
 
-        drawChannelOled(&oled_u1, &chan1, connected);
-        drawChannelOled(&oled_u2, &chan2, connected);
-        drawChannelOled(&oled_u3, &chan3, connected);
-        drawChannelOled(&oled_u4, &chan4, connected);
-        drawChannelOled(&oled_u5, &chan5, connected);
-        drawChannelOled(&oled_u6, &chan6, connected);
-        drawChannelOled(&oled_u7, &chan7, connected);
-        drawChannelOled(&oled_u8, &chan8, connected);
-        drawChannelOled(&oled_u9, &chan9, connected);
-        drawChannelOled(&oled_u10, &chan10, connected);
+        drawChannelOled(&oled_u1, &chan1);
+        drawChannelOled(&oled_u2, &chan2);
+        drawChannelOled(&oled_u3, &chan3);
+        drawChannelOled(&oled_u4, &chan4);
+        drawChannelOled(&oled_u5, &chan5);
+        drawChannelOled(&oled_u6, &chan6);
+        drawChannelOled(&oled_u7, &chan7);
+        drawChannelOled(&oled_u8, &chan8);
+        drawChannelOled(&oled_u9, &chan9);
+        drawChannelOled(&oled_u10, &chan10);
         // chan1.Button1Pressed = !chan1.Button1Pressed;
         // chan2.Button2Pressed = !chan2.Button2Pressed;
         // chan3.Button1Pressed = !chan3.Button1Pressed;
