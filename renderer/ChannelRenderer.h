@@ -1,5 +1,4 @@
-#ifndef _PioI2C_H_
-#define _PioI2C_H_
+#pragma once
 
 #include "pico/stdlib.h"
 #include "Renderer.h"
@@ -27,5 +26,3 @@ class ChannelRenderer : public Renderer
 
         virtual void render();
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef _MixerModel_H_
-#define _MixerModel_H_
+#pragma once
 
 #include "pico/stdlib.h"
 #include "ChannelModel.h"
@@ -22,5 +21,3 @@ struct MixerModel
         MasterSection* Master;        
         Channel* Channels[8]; 
 };
-
-#endif

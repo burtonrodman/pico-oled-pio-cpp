@@ -1,5 +1,4 @@
-#ifndef _HardwareI2C_H_
-#define _HardwareI2C_H_
+#pragma once
 
 #include "hardware/i2c.h"
 #include "pico/stdlib.h"
@@ -33,5 +32,3 @@ class HardwareI2C : public I2C
             bool nostop
         );
 };
-
-#endif

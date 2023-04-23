@@ -1,5 +1,4 @@
-#ifndef _ChannelModel_H_
-#define _ChannelModel_H_
+#pragma once
 
 #include "pico/stdlib.h"
 
@@ -33,5 +32,3 @@ struct ChannelModel
 
         uint8_t lastMidiMessage[4];
 };
-
-#endif

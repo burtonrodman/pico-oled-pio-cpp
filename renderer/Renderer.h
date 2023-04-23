@@ -1,5 +1,4 @@
-#ifndef _RENDERER_H_
-#define _RENDERER_H_
+#pragma once
 
 #include "pico/stdlib.h"
 
@@ -10,5 +9,3 @@ class Renderer
         virtual uint init() = 0;
         virtual void render() = 0;
 };
-
-#endif

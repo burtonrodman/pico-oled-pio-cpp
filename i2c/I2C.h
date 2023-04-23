@@ -1,5 +1,4 @@
-#ifndef _I2C_H_
-#define _I2C_H_
+#pragma once
 
 #include "pico/stdlib.h"
 
@@ -15,5 +14,3 @@ class I2C
             bool nostop
         ) = 0;
 };
-
-#endif
