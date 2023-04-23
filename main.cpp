@@ -48,10 +48,6 @@ static void blink_led(void)
     }
 }
 
-OLED CreateOledPio() {
-    // do objects created here get destroyed too early?
-}
-
 int main() {
     board_init();
     stdio_init_all();
