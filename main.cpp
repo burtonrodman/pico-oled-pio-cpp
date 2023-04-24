@@ -48,6 +48,33 @@ static void blink_led(void)
     }
 }
 
+uint8_t lastMidiMessage[4];
+void drawChannelOled(OLED* oled, ChannelModel* model)
+{
+    oled->clear();
+
+    char string1[10];
+    for (int i = 0; i < 4; i++) {
+        sprintf(string1 + i * 2, "%02X", model->lastMidiMessage[i]);
+    }
+    oled->print(0, 0, string1);
+
+    if (model->dirx == 1 && model->cx > 96) model->dirx = -1;
+    if (model->dirx == -1 && model->cx < 32) model->dirx = 1;
+    if (model->diry == 1 && model->cy > 64) model->diry = -1;
+    if (model->diry == -1 && model->cy < 32) model->diry = 1;
+
+    model->cx += model->dirx;
+    model->cy += model->diry;
+
+    oled->drawCircle(model->cx, model->cy, 16);
+
+    char string2[] = "Y";
+    oled->print(model->cx, model->cy, string2);
+ 
+    oled->show();
+}
+
 int main() {
     board_init();
     stdio_init_all();
