@@ -9,15 +9,13 @@ class ChannelRenderer : public Renderer
     private:
         ChannelModel* _model;
         OLED* _oled;
-        I2C* _i2c;
         bool _dirty;
         void drawChannelOled();
 
     public:
         ChannelRenderer(
             ChannelModel* model,
-            OLED* oled,
-            I2C* i2c
+            OLED* oled
         );
 
         ~ChannelRenderer();
