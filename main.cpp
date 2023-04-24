@@ -53,11 +53,8 @@ void drawChannelOled(OLED* oled, ChannelModel* model)
 {
     oled->clear();
 
-    char string1[10];
-    for (int i = 0; i < 4; i++) {
-        sprintf(string1 + i * 2, "%02X", model->lastMidiMessage[i]);
-    }
-    oled->print(0, 0, string1);
+    std::string message = "message";
+    oled->print(0, 0, message);
 
     if (model->dirx == 1 && model->cx > 96) model->dirx = -1;
     if (model->dirx == -1 && model->cx < 32) model->dirx = 1;
@@ -69,7 +66,7 @@ void drawChannelOled(OLED* oled, ChannelModel* model)
 
     oled->drawCircle(model->cx, model->cy, 16);
 
-    char string2[] = "Y";
+    std::string string2 = "Y";
     oled->print(model->cx, model->cy, string2);
  
     oled->show();
