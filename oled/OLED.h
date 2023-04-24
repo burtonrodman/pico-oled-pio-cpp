@@ -1,8 +1,10 @@
-#ifndef _OLED_H_
-#define _OLED_H_
+#pragma once
 
 #include "pico/stdlib.h"
 #include "I2C.h"
+#include <string>
+
+using string = std::string;
 
 #define OLED_ADDRESS 0x3C
 
@@ -60,7 +62,7 @@ class OLED {
     void write_cmd(uint8_t cmd);
     void write_data(uint8_t data[], uint len);
     void swap(uint8_t* x1, uint8_t* x2);
-    bool bitRead(uint8_t character, uint8_t index);
+    bool bitRead(char character, uint8_t index);
     void drawPixel(uint8_t x, uint8_t y);
 
    public:
@@ -91,12 +93,10 @@ class OLED {
     void isScroll(bool isEnable);
     void setFont(const GFXfont* font);
     void printChar(uint8_t x, uint8_t y, char character);
-    void print(uint8_t x, uint8_t y, char* string);
+    void print(uint8_t x, uint8_t y, string& text);
     void drawBitmap(uint8_t x,
                     uint8_t y,
                     uint8_t width,
                     uint8_t height,
                     const uint8_t* image);
 };
-
-#endif
