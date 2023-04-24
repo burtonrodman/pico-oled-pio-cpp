@@ -72,6 +72,10 @@ do_exec:
 .wrap
 
 % c-sdk {
+#ifndef _I2C_PIO_H_
+#define _I2C_PIO_H_
+
+#define interrupt0 _u(8)
 
 #include "hardware/clocks.h"
 #include "hardware/gpio.h"
@@ -110,8 +114,9 @@ static inline void i2c_program_init(PIO pio, uint sm, uint offset, uint pin_sda,
 
     // Clear IRQ flag before starting, and make sure flag doesn't actually
     // assert a system-level interrupt (we're using it as a status flag)
-    pio_set_irq0_source_enabled(pio, pis_interrupt0 + sm, false);
-    pio_set_irq1_source_enabled(pio, pis_interrupt0 + sm, false);
+    auto source = pio_interrupt_source(interrupt0 + sm);
+    pio_set_irq0_source_enabled(pio, source, false);
+    pio_set_irq1_source_enabled(pio, source, false);
     pio_interrupt_clear(pio, sm);
 
     // Configure and start SM
@@ -119,6 +124,7 @@ static inline void i2c_program_init(PIO pio, uint sm, uint offset, uint pin_sda,
     pio_sm_set_enabled(pio, sm, true);
 }
 
+#endif
 %}
 
 
