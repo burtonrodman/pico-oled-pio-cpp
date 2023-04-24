@@ -66,7 +66,9 @@ void drawChannelOled(OLED* oled, ChannelModel* model)
 
     oled->drawCircle(model->cx, model->cy, 16);
 
-    std::string string2 = "Y";
+    char buf[8];
+    sprintf(buf, "%d", model->ChannelNumber);
+    std::string string2 = std::string(buf);
     oled->print(model->cx, model->cy, string2);
  
     oled->show();
@@ -116,7 +118,7 @@ int main() {
     OLED oled_u4(128, 64, false, i2c_u4);
 
     uint sm_u5 = pio_claim_unused_sm(pio1, false);
-    PioI2C pio_u5(pio1, sm_u5, offset1, 19, 18, 400 * 1000);
+    PioI2C pio_u5(pio1, sm_u5, offset1, 7, 6, 400 * 1000);
     I2C* i2c_u5 = &pio_u5;
     OLED oled_u5(128, 64, false, i2c_u5);
     
@@ -135,7 +137,7 @@ int main() {
     I2C* i2c_u8 = &pio_u8;
     OLED oled_u8(128, 64, false, i2c_u8);
 
-    HardwareI2C hw_u9(7, 6, 400 * 1000, i2c1);
+    HardwareI2C hw_u9(19, 18, 400 * 1000, i2c1);
     I2C* i2c_u9 = &hw_u9;
     OLED oled_u9(128, 64, false, i2c_u9);
 
