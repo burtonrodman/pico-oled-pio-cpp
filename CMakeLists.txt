@@ -29,9 +29,12 @@ target_sources(${target_project} PUBLIC
     renderer/Renderer.h
     renderer/ChannelRenderer.h
     renderer/ChannelRenderer.cpp
+
+    XTouchMini.h
 )
 
 set_source_files_properties(main.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
+set_source_files_properties(ChannelRenderer.cpp PROPERTIES COMPILE_FLAGS -fpermissive)
 
 target_include_directories(${target_project} PUBLIC ${CMAKE_CURRENT_LIST_DIR})
 
