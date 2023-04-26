@@ -19,5 +19,9 @@ struct MixerModel
 {
     public:
         MasterSection* Master;        
-        std::vector<ChannelModel*> Channels; 
+        std::vector<ChannelModel*> Channels;
+
+        void DispatchMidiMessage(uint8_t *message, uint8_t len) {
+            Channels[0]->ProcessMidiMessage(message, len);
+        }
 };
