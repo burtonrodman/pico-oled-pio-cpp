@@ -5,6 +5,7 @@
 #include "PioI2C.h"
 #include "OLED.h"
 
+#include "models/MixerModel.h"
 #include "models/ChannelModel.h"
 #include "renderer/Renderer.h"
 #include "renderer/ChannelRenderer.h"
@@ -39,6 +40,12 @@ std::vector<ChannelModel*> createChannelModels()
         new ChannelModel{8, 0}
     };
     return channels;
+}
+
+MixerModel* createMixerModel() {
+    MixerModel* mixer = new MixerModel();
+    mixer->Channels = createChannelModels();
+    return mixer;
 }
 
 std::vector<Renderer*> createRenderers(

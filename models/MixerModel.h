@@ -19,5 +19,5 @@ struct MixerModel
 {
     public:
         MasterSection* Master;        
-        Channel* Channels[8]; 
+        std::vector<ChannelModel*> Channels; 
 };

@@ -13,6 +13,7 @@
 
 
 static uint8_t midi_dev_addr = 0;
+static MixerModel* mixer;
 
 static void poll_usb_rx(bool connected)
 {
@@ -45,8 +46,8 @@ int main() {
     const uint offset0 = pio_add_program(pio0, &i2c_program);
     const uint offset1 = pio_add_program(pio1, &i2c_program);
 
-    std::vector<ChannelModel*> channels = createChannelModels();
-    std::vector<Renderer*> renderers = createRenderers(channels, offset0, offset1);
+    mixer = createMixerModel();
+    std::vector<Renderer*> renderers = createRenderers(mixer->Channels, offset0, offset1);
 
     printf("waiting for MIDI events\n");
     int x = 1;
@@ -62,8 +63,8 @@ int main() {
 
         x++;
         if (x % 10 == 0) {
-            channels[3]->EncoderValue++;
-            channels[3]->Dirty = true;
+            mixer->Channels[3]->EncoderValue++;
+            mixer->Channels[3]->Dirty = true;
         }
 
         for (Renderer* renderer : renderers) {
