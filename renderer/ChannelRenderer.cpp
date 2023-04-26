@@ -35,8 +35,10 @@ void ChannelRenderer::drawChannelOled()
 
     // _oled->drawCircle(_model->cx, _model->cy, 16);
 
-    // char string2[] = "Y";
-    // _oled->print(_model->cx, _model->cy, string2);
+    char buf[8];
+    sprintf(buf, "%d", _model->EncoderValue);
+    std::string string2 = std::string(buf);
+    _oled->print(_model->cx, _model->cy, string2);
  
     _oled->show();
 }
@@ -56,8 +58,8 @@ uint ChannelRenderer::init() {
 }
 
 void ChannelRenderer::render() {
-    // if (_dirty == true) {
+    if (_model->Dirty) {
         drawChannelOled();
-    //     _dirty = false;
-    // }
+        _model->Dirty = false;
+    }
 }

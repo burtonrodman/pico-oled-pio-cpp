@@ -30,6 +30,8 @@ target_sources(${target_project} PUBLIC
     renderer/ChannelRenderer.h
     renderer/ChannelRenderer.cpp
 
+    blink_led.h
+
     XTouchMini.h
 )
 

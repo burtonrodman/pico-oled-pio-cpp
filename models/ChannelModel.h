@@ -31,4 +31,5 @@ struct ChannelModel
         int diry = 1;
 
         uint8_t lastMidiMessage[4];
+        bool Dirty = true;
 };
