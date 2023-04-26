@@ -1,5 +1,4 @@
-#ifndef _PioI2C_H_
-#define _PioI2C_H_
+#pragma once
 
 #include "pico/stdlib.h"
 #include "pio_i2c.h"
@@ -37,5 +36,3 @@ class PioI2C : public I2C
             bool nostop
         );
 };
-
-#endif

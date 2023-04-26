@@ -1,8 +1,10 @@
 #include <cstdio>
-#include <cstring>
+#include <string>
 
 #include "OLED.h"
 #include "font/Dialog_bold_16.h"
+
+using string = std::string;
 
 void OLED::write_cmd(uint8_t cmd) {
     // 0x00 for write command
@@ -32,7 +34,7 @@ void OLED::swap(uint8_t* x1, uint8_t* x2) {
     *x1 = *x2, *x2 = temp;
 }
 
-bool OLED::bitRead(uint8_t character, uint8_t index) {
+bool OLED::bitRead(char character, uint8_t index) {
     return bool((character >> index) & 0x01);
 }
 
@@ -245,7 +247,7 @@ void OLED::setFont(const GFXfont* font) {
     myFont = font;
 }
 
-void OLED::printChar(uint8_t x, uint8_t y, uint8_t character) {
+void OLED::printChar(uint8_t x, uint8_t y, char character) {
     if (character < myFont->first || character > myFont->last)
         return;
     character -= myFont->first;
@@ -271,9 +273,8 @@ void OLED::printChar(uint8_t x, uint8_t y, uint8_t character) {
     }
 }
 
-void OLED::print(uint8_t x, uint8_t y, uint8_t* string) {
-    for (uint8_t i = 0; string[i]; i++) {
-        uint8_t character = string[i];
+void OLED::print(uint8_t x, uint8_t y, string& text) {
+    for (const char character : text) {
         GFXglyph* glyph = myFont->glyph + character - myFont->first;
         if (x + glyph->width + glyph->xOffset > WIDTH) {
             x = 0;
