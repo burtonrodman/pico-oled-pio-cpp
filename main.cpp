@@ -61,10 +61,9 @@ int main() {
             tuh_midi_stream_flush(midi_dev_addr);
         poll_usb_rx(connected);
 
-        mixer->Channels[7]->EncoderValue = x++;
-        mixer->Channels[7]->lastMidiMessage[2] = x;
-        mixer->Channels[7]->Dirty = true;
-
+        mixer->Channels[0]->EncoderValue = x++;
+        mixer->Channels[0]->lastMidiMessage[2] = x;
+        mixer->Channels[0]->Dirty = true;
 
         for (Renderer* renderer : renderers) {
             renderer->render();
