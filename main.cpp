@@ -28,7 +28,7 @@ static void poll_usb_rx(bool connected)
 int main() {
     board_init();
     stdio_init_all();
-    // tusb_init();
+    tusb_init();
 
     if (cyw43_arch_init()) 
     {
@@ -50,22 +50,21 @@ int main() {
     std::vector<Renderer*> renderers = createRenderers(mixer->Channels, offset0, offset1);
 
     printf("waiting for MIDI events\n");
-    int x = 1;
+    uint8_t x = 1;
     while (1) {
-        // tuh_task();
+        tuh_task();
 
         blink_led();
-        // bool connected = midi_dev_addr != 0 && tuh_midi_configured(midi_dev_addr);
+        bool connected = midi_dev_addr != 0 && tuh_midi_configured(midi_dev_addr);
 
-        // if (connected)
-        //     tuh_midi_stream_flush(midi_dev_addr);
-        // poll_usb_rx(connected);
+        if (connected)
+            tuh_midi_stream_flush(midi_dev_addr);
+        poll_usb_rx(connected);
 
-        x++;
-        if (x % 10 == 0) {
-            mixer->Channels[3]->EncoderValue++;
-            mixer->Channels[3]->Dirty = true;
-        }
+        mixer->Channels[7]->EncoderValue = x++;
+        mixer->Channels[7]->lastMidiMessage[2] = x;
+        mixer->Channels[7]->Dirty = true;
+
 
         for (Renderer* renderer : renderers) {
             renderer->render();
@@ -91,6 +90,12 @@ void tuh_midi_mount_cb(uint8_t dev_addr, uint8_t in_ep, uint8_t out_ep, uint8_t 
   printf("MIDI device address = %u, IN endpoint %u has %u cables, OUT endpoint %u has %u cables\r\n",
       dev_addr, in_ep & 0xf, num_cables_rx, out_ep & 0xf, num_cables_tx);
 
+  mixer->Channels[0]->lastMidiMessage[0] = 255;
+  mixer->Channels[0]->lastMidiMessage[1] = 255;
+  mixer->Channels[0]->lastMidiMessage[2] = 255;
+  mixer->Channels[0]->lastMidiMessage[3] = 255;
+  mixer->Channels[0]->Dirty = true;
+
   if (midi_dev_addr == 0) {
     // then no MIDI device is currently connected
     midi_dev_addr = dev_addr;
@@ -103,6 +108,12 @@ void tuh_midi_mount_cb(uint8_t dev_addr, uint8_t in_ep, uint8_t out_ep, uint8_t 
 // Invoked when device with hid interface is un-mounted
 void tuh_midi_umount_cb(uint8_t dev_addr, uint8_t instance)
 {
+  mixer->Channels[0]->lastMidiMessage[0] = 0;
+  mixer->Channels[0]->lastMidiMessage[1] = 0;
+  mixer->Channels[0]->lastMidiMessage[2] = 0;
+  mixer->Channels[0]->lastMidiMessage[3] = 0;
+  mixer->Channels[0]->Dirty = true;
+
   if (dev_addr == midi_dev_addr) {
     midi_dev_addr = 0;
     printf("MIDI device address = %d, instance = %d is unmounted\r\n", dev_addr, instance);
@@ -126,10 +137,7 @@ void tuh_midi_rx_cb(uint8_t dev_addr, uint32_t num_packets)
                     return;
                 if (cable_num == 0) {
                     uint32_t nwritten = tuh_midi_stream_write(dev_addr, cable_num, buffer, bytes_read);
-                    for (int i = 0; i < bytes_read; i++) {
-                        // lastMidiMessage[i] = buffer[i];
-                        // printf("%02x ", buffer[i]);
-                    }
+                    mixer->DispatchMidiMessage(buffer, bytes_read);
                 }
             }
         }

@@ -22,6 +22,8 @@ struct MixerModel
         std::vector<ChannelModel*> Channels;
 
         void DispatchMidiMessage(uint8_t *message, uint8_t len) {
-            Channels[0]->ProcessMidiMessage(message, len);
+            for (ChannelModel* chan : Channels) {
+                if (chan->ProcessMidiMessage(message, len)) return;
+            }
         }
 };

@@ -18,11 +18,11 @@ void ChannelRenderer::drawChannelOled()
 {
     _oled->clear();
 
-    // char string1[10];
-    // for (int i = 0; i < 4; i++) {
-    //     sprintf(string1 + i * 2, "%02X", _model->lastMidiMessage[i]);
-    // }
-    std::string message = "message";
+    char string1[10];
+    for (int i = 0; i < 4; i++) {
+        sprintf(string1 + i * 2, "%02X", _model->lastMidiMessage[i]);
+    }
+    std::string message = std::string(string1);
     _oled->print(0, 0, message);
 
     // if (_model->dirx == 1 && _model->cx > 96) _model->dirx = -1;
