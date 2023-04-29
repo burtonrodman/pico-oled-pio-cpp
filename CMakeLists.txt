@@ -52,6 +52,7 @@ target_link_libraries(${target_project} PRIVATE
     oled
     tinyusb_host
     tinyusb_board
+    pico_multicore
 )
 
 pico_add_extra_outputs(${target_project})
