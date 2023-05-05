@@ -162,7 +162,7 @@ void tuh_midi_rx_cb(uint8_t dev_addr, uint32_t num_packets)
                 return;
             if (cable_num == 0) {
                 // TODO - move me to the main core0 loop as a fifo read so that the "business logic" has a say in what gets written back
-                // uint32_t nwritten = tuh_midi_stream_write(dev_addr, cable_num, buffer, bytes_read);
+                uint32_t nwritten = tuh_midi_stream_write(dev_addr, cable_num, buffer, bytes_read);
 
                 mixer->DispatchMidiMessage(buffer, bytes_read);
             }
