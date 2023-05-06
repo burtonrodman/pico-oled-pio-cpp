@@ -14,6 +14,12 @@
 #include "ChannelRenderer.h"
 #include "../models/ChannelModel.h"
 
+std::string formatString(char *format, uint8_t value) {
+    char buffer[16];
+    sprintf(buffer, format, value);
+    return std::string(buffer);
+}
+
 void ChannelRenderer::drawChannelOled()
 {
     _oled->clear();
@@ -25,20 +31,31 @@ void ChannelRenderer::drawChannelOled()
     // std::string message = std::string(string1);
     // _oled->print(0, 0, message);
 
-    // if (_model->dirx == 1 && _model->cx > 96) _model->dirx = -1;
-    // if (_model->dirx == -1 && _model->cx < 32) _model->dirx = 1;
-    // if (_model->diry == 1 && _model->cy > 64) _model->diry = -1;
-    // if (_model->diry == -1 && _model->cy < 32) _model->diry = 1;
+    auto chanString = formatString("   CHAN %d   ", _model->ChannelNumber);
+    _oled->print(0, 0, chanString);
 
-    // _model->cx += _model->dirx;
-    // _model->cy += _model->diry;
-
-    // _oled->drawCircle(_model->cx, _model->cy, 16);
+    _oled->drawRectangle(0, 16, 128, 8);
+    _oled->drawRectangle(1, 17, _model->EncoderValue, 6);
 
     char buf[8];
     sprintf(buf, "%d", _model->EncoderValue);
     std::string string2 = std::string(buf);
-    _oled->print(_model->cx, _model->cy, string2);
+    _oled->print(0, 40, string2);
+
+    if (_model->EncoderPressed) {
+        std::string a = std::string("0");
+        _oled->print(32, 40, a);
+    }
+
+    if (_model->Button1Pressed) {
+        std::string b = std::string("1");
+        _oled->print(48, 40, b);
+    }
+
+    if (_model->Button2Pressed) {
+        std::string c = std::string("2");
+        _oled->print(64, 40, c);
+    }
  
     _oled->show();
 }

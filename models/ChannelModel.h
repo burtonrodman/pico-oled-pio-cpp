@@ -25,23 +25,30 @@ struct ChannelModel
         bool Button2Pressed = false;
         bool Button2Lit = false;
 
-        uint8_t cx = 32;
-        uint8_t cy = 32;
-        int dirx = 1;
-        int diry = 1;
-
         uint8_t lastMidiMessage[4];
         bool Dirty = true;
 
         bool ProcessMidiMessage(uint8_t *message, uint8_t len) {
-            // channel 1 - B010 - KNOB TURN; 9020 - KNOB PUSH; 9059 - BUTTON1; 9057 - BUTTON2
+            auto a = message[0];
+            auto b = message[1];
+            auto c = message[2];
 
-                // for (int i = 0; i < len; i++) {
-                //     lastMidiMessage[i] = message[i];
-                // }
+            if (a == 0xb0) {
                 EncoderValue += 1;
-                Dirty = true;
-                return true;
-
+            }
+            if (a == 0x90 && b >= 0x20 && b <= 0x27) {
+                EncoderPressed = (c == 0x7f);
+            }
+            if (a == 0x90 && (b == 0x59 || b == 0x5a || (b >= 0x28 && b <= 0x2d)))
+            {
+                Button1Pressed = (c == 0x7f);
+            }
+            if (a == 0x90 && (b == 0x56 || b == 0x57 || b == 0x58 || (b >= 0x5b && b <= 0x5f)))
+            {
+                Button2Pressed = (c == 0x7f);
+            }
+            
+            Dirty = true;
+            return true;
         }
 };
