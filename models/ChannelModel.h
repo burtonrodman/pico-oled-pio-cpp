@@ -15,7 +15,7 @@ struct ChannelModel
 {
     public:
         uint8_t ChannelNumber = 0;
-        uint8_t EncoderValue = 0;
+        uint8_t EncoderValue = 0x7f;
         EncoderTypes EncoderType = Single;
         bool EncoderPressed = false;
 
@@ -34,7 +34,19 @@ struct ChannelModel
             auto c = message[2];
 
             if (a == 0xb0) {
-                EncoderValue += 1;
+                if (c > 0x00 && c < 0x08) {
+                    if (EncoderValue > 0xff - 7)
+                        EncoderValue = 0xff;
+                    else
+                        EncoderValue += c;
+                }
+                if (c > 0x40 && c < 0x48) {
+                    if (EncoderValue < (c - 0x40)) {
+                        EncoderValue = 0;
+                    } else {
+                        EncoderValue -= (c - 0x40);
+                    }
+                }
             }
             if (a == 0x90 && b >= 0x20 && b <= 0x27) {
                 EncoderPressed = (c == 0x7f);

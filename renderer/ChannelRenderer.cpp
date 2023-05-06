@@ -34,13 +34,8 @@ void ChannelRenderer::drawChannelOled()
     auto chanString = formatString("   CHAN %d   ", _model->ChannelNumber);
     _oled->print(0, 0, chanString);
 
-    _oled->drawRectangle(0, 16, 128, 8);
-    _oled->drawRectangle(1, 17, _model->EncoderValue, 6);
-
-    char buf[8];
-    sprintf(buf, "%d", _model->EncoderValue);
-    std::string string2 = std::string(buf);
-    _oled->print(0, 40, string2);
+    _oled->drawRectangle(0, 24, 128, 8);
+    _oled->drawFilledRectangle(1, 25, _model->EncoderValue / 2, 6);
 
     if (_model->EncoderPressed) {
         std::string a = std::string("0");

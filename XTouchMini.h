@@ -30,14 +30,14 @@ OLED* createOledPioI2C(PIO pio, uint program_offset, uint scl, uint sda)
 std::vector<ChannelModel*> createChannelModels()
 {
     std::vector<ChannelModel*> channels = {
-        new ChannelModel{1, 0},
-        new ChannelModel{2, 0},
-        new ChannelModel{3, 0},
-        new ChannelModel{4, 0},
-        new ChannelModel{5, 0},
-        new ChannelModel{6, 0},
-        new ChannelModel{7, 0},
-        new ChannelModel{8, 0}
+        new ChannelModel{1},
+        new ChannelModel{2},
+        new ChannelModel{3},
+        new ChannelModel{4},
+        new ChannelModel{5},
+        new ChannelModel{6},
+        new ChannelModel{7},
+        new ChannelModel{8}
     };
     return channels;
 }
