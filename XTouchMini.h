@@ -14,6 +14,7 @@
 #include "renderer/Renderer.h"
 #include "renderer/ChannelRenderer.h"
 #include "renderer/MasterRenderer.h"
+#include "renderer/SystemRenderer.h"
 
 OLED* createOledPioI2C(PIO pio, uint program_offset, uint scl, uint sda)
 {
@@ -49,6 +50,7 @@ std::vector<ChannelModel*> createChannelModels()
 
 MixerModel* createMixerModel() {
     MixerModel* mixer = new MixerModel();
+    mixer->System = new SystemModel();
     mixer->Master = new MasterModel();
     mixer->Channels = createChannelModels();
     return mixer;
@@ -68,8 +70,8 @@ std::vector<Renderer*> createRenderers(
     renderers.push_back(new ChannelRenderer(mixer->Channels[5], createOledPioI2C(pio1, offset1,  5,  4)));
     renderers.push_back(new ChannelRenderer(mixer->Channels[6], createOledPioI2C(pio1, offset1, 15, 14)));
     renderers.push_back(new ChannelRenderer(mixer->Channels[7], createOledPioI2C(pio1, offset1, 17, 16)));
-    renderers.push_back(new MasterRenderer(mixer->Master, createOledHardwareI2C(21, 20, i2c0)));
-        // new MasterRenderer(createOledHardwareI2C(19, 18))
+    renderers.push_back(new SystemRenderer(mixer->System, createOledHardwareI2C(21, 20, i2c0)));
+    renderers.push_back(new MasterRenderer(mixer->Master, createOledHardwareI2C(19, 18, i2c1)));
 
     return renderers;
 }

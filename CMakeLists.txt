@@ -26,12 +26,15 @@ target_sources(${target_project} PUBLIC
     models/ChannelModel.h
     models/MasterModel.h
     models/MixerModel.h
+    models/SystemModel.h
 
     renderer/Renderer.h
     renderer/ChannelRenderer.h
     renderer/ChannelRenderer.cpp
     renderer/MasterRenderer.h
     renderer/MasterRenderer.cpp
+    renderer/SystemRenderer.h
+    renderer/SystemRenderer.cpp
 
     blink_led.h
 

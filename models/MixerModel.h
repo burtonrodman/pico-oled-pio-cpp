@@ -3,6 +3,7 @@
 #include "pico/stdlib.h"
 #include "ChannelModel.h"
 #include "MasterModel.h"
+#include "SystemModel.h"
 
 struct MixerModel
 {
@@ -86,6 +87,7 @@ struct MixerModel
 
     public:
         MasterModel* Master;        
+        SystemModel* System;
         std::vector<ChannelModel*> Channels;
 
         void DispatchMidiMessage(uint8_t *message, uint8_t len) {
@@ -93,5 +95,7 @@ struct MixerModel
             if (channel > 0) {
                 Channels[channel - 1]->ProcessMidiMessage(message, len);
             }
+            Master->ProcessMidiMessage(message, len);
+            System->ProcessMidiMessage(message, len);
         }
 };

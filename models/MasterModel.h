@@ -9,12 +9,17 @@ struct MasterModel
         bool Dirty = true;
 
         uint8_t FaderValue = 0;
+    
+        bool ProcessMidiMessage(uint8_t *message, uint8_t len) {
+            auto a = message[0];
+            auto c = message[2];
 
-        bool LayerAButtonPressed = false;
-        bool LayerAButtonLit = false;
+            if (a == 0xe8) {
+                FaderValue = c;
+            }
+            
+            Dirty = true;
+            return true;
+        }
 
-        bool LayerBButtonPressed = false;
-        bool LayerBButtonLit = false;
-
-        std::string IpAddress = std::string("192.168.0.1");
 };

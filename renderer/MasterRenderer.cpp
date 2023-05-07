@@ -13,7 +13,8 @@ void MasterRenderer::drawMasterOled()
 {
     _oled->clear();
 
-    _oled->print(0, 0, _model->IpAddress);
+    std::string fader = formatIntToString("master - %d", _model->FaderValue);
+    _oled->print(0, 0, fader);
  
     _oled->show();
 }
