@@ -52,15 +52,10 @@ void core1_entry() {
     const uint offset1 = pio_add_program(pio1, &i2c_program);
 
     mixer = createMixerModel();
-    std::vector<Renderer*> renderers = createRenderers(mixer->Channels, offset0, offset1);
+    std::vector<Renderer*> renderers = createRenderers(mixer, offset0, offset1);
 
     uint8_t x = 1;
     while (1) {
-
-        // mixer->Channels[0]->EncoderValue = x++;
-        mixer->Channels[0]->lastMidiMessage[2] = x;
-        mixer->Channels[0]->Dirty = true;
-
         for (Renderer* renderer : renderers) {
             renderer->render();
         }

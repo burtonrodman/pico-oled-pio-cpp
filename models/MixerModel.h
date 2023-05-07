@@ -2,18 +2,7 @@
 
 #include "pico/stdlib.h"
 #include "ChannelModel.h"
-
-struct MasterSection
-{
-    public:
-        uint8_t FaderValue = 0;
-
-        bool LayerAButtonPressed = false;
-        bool LayerAButtonLit = false;
-
-        bool LayerBButtonPressed = false;
-        bool LayerBButtonLit = false;
-};
+#include "MasterModel.h"
 
 struct MixerModel
 {
@@ -96,7 +85,7 @@ struct MixerModel
         }
 
     public:
-        MasterSection* Master;        
+        MasterModel* Master;        
         std::vector<ChannelModel*> Channels;
 
         void DispatchMidiMessage(uint8_t *message, uint8_t len) {

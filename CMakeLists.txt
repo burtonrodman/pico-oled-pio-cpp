@@ -24,11 +24,14 @@ target_sources(${target_project} PUBLIC
     tusb_config.h
 
     models/ChannelModel.h
+    models/MasterModel.h
     models/MixerModel.h
 
     renderer/Renderer.h
     renderer/ChannelRenderer.h
     renderer/ChannelRenderer.cpp
+    renderer/MasterRenderer.h
+    renderer/MasterRenderer.cpp
 
     blink_led.h
 

@@ -14,12 +14,6 @@
 #include "ChannelRenderer.h"
 #include "../models/ChannelModel.h"
 
-std::string formatString(char *format, uint8_t value) {
-    char buffer[16];
-    sprintf(buffer, format, value);
-    return std::string(buffer);
-}
-
 void ChannelRenderer::drawChannelOled()
 {
     _oled->clear();
@@ -31,7 +25,7 @@ void ChannelRenderer::drawChannelOled()
     // std::string message = std::string(string1);
     // _oled->print(0, 0, message);
 
-    auto chanString = formatString("   CHAN %d   ", _model->ChannelNumber);
+    auto chanString = formatIntToString("   CHAN %d   ", _model->ChannelNumber);
     _oled->print(0, 0, chanString);
 
     _oled->drawRectangle(0, 24, 128, 8);
