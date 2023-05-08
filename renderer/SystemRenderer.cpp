@@ -3,7 +3,7 @@
 #include "pico/stdlib.h"
 
 #include "../oled/OLED.h"
-#include "../oled/font/Cherry_Cream_Soda_Regular_16.h"
+#include "../oled/font/Cousine_Regular_12.h"
 
 #include "Renderer.h"
 #include "SystemRenderer.h"
@@ -12,6 +12,7 @@
 void SystemRenderer::drawSystemOled()
 {
     _oled->clear();
+    _oled->setFont(&Cousine_Regular_12);
 
     _oled->print(0, 0, _model->IpAddress);
 

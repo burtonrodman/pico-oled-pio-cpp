@@ -14,7 +14,7 @@ struct SystemModel
         bool LayerBButtonPressed = false;
         bool LayerBButtonLit = false;
 
-        std::string IpAddress = std::string("192.168.0.1");
+        std::string IpAddress = std::string("192.168.255.255");
         
         bool ProcessMidiMessage(uint8_t *message, uint8_t len) {
             auto a = message[0];
