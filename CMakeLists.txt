@@ -59,6 +59,7 @@ target_link_libraries(${target_project} PRIVATE
     tinyusb_host
     tinyusb_board
     pico_multicore
+    pico_cyw43_arch_lwip_threadsafe_background
 )
 
 pico_add_extra_outputs(${target_project})

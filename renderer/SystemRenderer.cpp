@@ -14,7 +14,15 @@ void SystemRenderer::drawSystemOled()
     _oled->clear();
     _oled->setFont(&Cousine_Regular_12);
 
-    _oled->print(0, 0, _model->IpAddress);
+    if (_model->WifiConnected) { 
+        _oled->print(0, 0, _model->IpAddress);
+    } else {
+        std::string msg1 = std::string("connect...");
+        _oled->print(0, 0, msg1);
+
+        std::string msg2 = formatIntIntToString("lnk-%d con-%d", _model->WifiLinkStatus, _model->WifiConnectError);
+        _oled->print(0, 16, msg2);
+    }
 
     if (_model->LayerAButtonPressed) {
         std::string a = std::string("A");

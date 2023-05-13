@@ -15,6 +15,9 @@ struct SystemModel
         bool LayerBButtonLit = false;
 
         std::string IpAddress = std::string("192.168.255.255");
+        int WifiLinkStatus = 99;
+        int WifiConnectError = 99;
+        bool WifiConnected = false;
         
         bool ProcessMidiMessage(uint8_t *message, uint8_t len) {
             auto a = message[0];

@@ -6,11 +6,22 @@
 #include "pico/multicore.h"
 #include "hardware/irq.h"
 
+// USB
 #include "tusb.h"
 #include "bsp/board.h"
 #include "class/midi/midi_host.h"
 
+// NETWORK
+// #include "lwip/dns.h"
+// #include "lwip/ip4_addr.h"
+// #include "lwip/sockets.h"
+
 // #include "blink_led.h"
+
+#include "renderer/Renderer.h"
+
+const char ssid[] = "<ssid>";
+const char pass[] = "<password>";
 
 #include "XTouchMini.h"
 
@@ -29,25 +40,7 @@ static void poll_usb_rx(bool connected)
     tuh_midi_read_poll(midi_dev_addr);
 }
 
-// void core1_interrupt_handler() {
-//     while (multicore_fifo_rvalid()) {
-//         uint32_t message = multicore_fifo_pop_blocking();
-
-//         uint8_t buffer[4] = {
-//             (uint8_t) ( message & 0x000000ff       ),
-//             (uint8_t) ((message & 0x0000ff00) >> 8 ),
-//             (uint8_t) ((message & 0x00ff0000) >> 16),
-//             (uint8_t) ((message & 0xff000000) >> 24)           
-//         };
-//     }
-//     multicore_fifo_clear_irq();
-// }
-
 void core1_entry() {
-    // multicore_fifo_clear_irq();
-    // irq_set_exclusive_handler(SIO_IRQ_PROC1, core1_interrupt_handler);
-    // irq_set_enabled(SIO_IRQ_PROC1, true);
-
     const uint offset0 = pio_add_program(pio0, &i2c_program);
     const uint offset1 = pio_add_program(pio1, &i2c_program);
 
@@ -62,6 +55,47 @@ void core1_entry() {
     }
 }
 
+void ensure_wifi_connected() {
+
+    static int cycle = 0;
+
+    if (cycle % 256 == 0) {
+        auto status = cyw43_wifi_link_status(&cyw43_state, CYW43_ITF_STA);
+        mixer->System->WifiLinkStatus = status;
+        mixer->System->Dirty = true;
+
+        switch (status)
+        {
+        case CYW43_LINK_DOWN:
+        case CYW43_LINK_FAIL:
+        case CYW43_LINK_NONET:
+        case CYW43_LINK_BADAUTH:
+            mixer->System->WifiConnected = false;
+            mixer->System->WifiConnectError = cyw43_arch_wifi_connect_async(ssid, pass, CYW43_AUTH_WPA2_AES_PSK);
+            break;
+
+        case CYW43_LINK_JOIN:
+        case CYW43_LINK_NOIP:
+            mixer->System->WifiConnected = false;
+            mixer->System->WifiConnectError = 0;
+            break;
+
+        case CYW43_LINK_UP:
+            mixer->System->WifiConnected = true;
+            // char *ipAddr = ipaddr_ntoa(netif_ip4_addr(&cyw43_state.netif[0]));
+            // mixer->System->IpAddress = std::string(ipAddr);
+            break;
+        
+        default:
+            break;
+        }
+        mixer->System->Dirty = true;
+    }
+
+    cycle++;
+
+}
+
 int main() {
     stdio_init_all();
 
@@ -69,23 +103,22 @@ int main() {
     board_init();
     tusb_init();
 
-    if (cyw43_arch_init()) 
+    multicore_launch_core1(core1_entry);
+
+    if (cyw43_arch_init_with_country(CYW43_COUNTRY_USA))
     {
         printf("Wifi init failed");
         return -1;
     }
+    // cyw43_wifi_pm(&cyw43_state, CYW43_PERFORMANCE_PM);
 
-    // pause to allow starting PuTTY
-    // cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
-    // sleep_ms(10000);
-    // cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 0);
-    // sleep_ms(50);
-
-    multicore_launch_core1(core1_entry);
+    cyw43_arch_enable_sta_mode();
 
     printf("waiting for MIDI events\n");
     while (1) {
         tuh_task();
+
+        ensure_wifi_connected();
 
         // blink_led();
         if (midi_dev_addr != 0 && tuh_midi_configured(midi_dev_addr)) {
@@ -97,6 +130,59 @@ int main() {
     return 0;
 }
 
+// void tcp_setup(void) {
+//     struct ip_addr ip;
+//     IP4_ADDR(&ip, 10, 0, 0, 231);
+
+//     testpcb = tcp_new();
+
+//     uint32_t data = 0xdeadbeef;
+//     tcp_arg(testpcb, &data);
+
+//     tcp_error(testpcb, tcpErrorHandler);
+//     tcp_recv(testpcb, tcpRecvCallback);
+//     tcp_sent(testpcb, tcpSendCallback);
+
+//     tcp_connect(testpcb, &ip, 5086, connectCallback);
+// }
+
+// uint32_t tcp_send_packet(void) {
+//     char *string = "HEAD /random HTTP/1.0\r\n\r\n ";
+//     uint32_t len = strlen(string);
+
+//     /* push to buffer */
+//     error = tcp_write(testpcb, string, strlen(string), TCP_WRITE_FLAG_COPY);
+
+//     if (error) {
+//         // UARTprintf("ERROR: Code: %d (tcp_send_packet :: tcp_write)\n", error);
+//         return 1;
+//     }
+
+//     /* now send */
+//     error = tcp_output(testpcb);
+//     if (error) {
+//         // UARTprintf("ERROR: Code: %d (tcp_send_packet :: tcp_output)\n", error);
+//         return 1;
+//     }
+//     return 0;
+// }
+
+// err_t tcpRecvCallback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_t err)
+// {
+//     // UARTprintf("Data recieved.\n");
+//     if (p == NULL) {
+//         // UARTprintf("The remote host closed the connection.\n");
+//         // UARTprintf("Now I'm closing the connection.\n");
+//         tcp_close_con();
+//         return ERR_ABRT;
+//     } else {
+//         // UARTprintf("Number of pbufs %d\n", pbuf_clen(p));
+//         // UARTprintf("Contents of pbuf %s\n", (char *)p->payload);
+//         mixer->System->IpAddress = std::string(p->payload)
+//     }
+
+//     return 0;
+// }
 
 //--------------------------------------------------------------------+
 // TinyUSB Callbacks
@@ -112,12 +198,6 @@ void tuh_midi_mount_cb(uint8_t dev_addr, uint8_t in_ep, uint8_t out_ep, uint8_t 
 //   printf("MIDI device address = %u, IN endpoint %u has %u cables, OUT endpoint %u has %u cables\r\n",
 //       dev_addr, in_ep & 0xf, num_cables_rx, out_ep & 0xf, num_cables_tx);
 
-//   mixer->Channels[0]->lastMidiMessage[0] = 255;
-//   mixer->Channels[0]->lastMidiMessage[1] = 255;
-//   mixer->Channels[0]->lastMidiMessage[2] = 255;
-//   mixer->Channels[0]->lastMidiMessage[3] = 255;
-//   mixer->Channels[0]->Dirty = true;
-
   if (midi_dev_addr == 0) {
     // then no MIDI device is currently connected
     midi_dev_addr = dev_addr;
@@ -130,11 +210,6 @@ void tuh_midi_mount_cb(uint8_t dev_addr, uint8_t in_ep, uint8_t out_ep, uint8_t 
 // Invoked when device with hid interface is un-mounted
 void tuh_midi_umount_cb(uint8_t dev_addr, uint8_t instance)
 {
-//   mixer->Channels[0]->lastMidiMessage[0] = 0;
-//   mixer->Channels[0]->lastMidiMessage[1] = 0;
-//   mixer->Channels[0]->lastMidiMessage[2] = 0;
-//   mixer->Channels[0]->lastMidiMessage[3] = 0;
-//   mixer->Channels[0]->Dirty = true;
 
   if (dev_addr == midi_dev_addr) {
     midi_dev_addr = 0;

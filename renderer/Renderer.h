@@ -15,4 +15,10 @@ class Renderer
             sprintf(buffer, format, value);
             return std::string(buffer);
         }
+
+        std::string formatIntIntToString(char *format, int value1, int value2) {
+            char buffer[16];
+            sprintf(buffer, format, value1, value2);
+            return std::string(buffer);
+        }
 };
