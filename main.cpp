@@ -60,7 +60,7 @@ void ensure_wifi_connected() {
     static int cycle = 0;
 
     if (cycle % 256 == 0) {
-        auto status = cyw43_wifi_link_status(&cyw43_state, CYW43_ITF_STA);
+        auto status = cyw43_tcpip_link_status(&cyw43_state, CYW43_ITF_STA);
         mixer->System->WifiLinkStatus = status;
         mixer->System->Dirty = true;
 
