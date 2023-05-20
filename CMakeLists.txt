@@ -53,7 +53,6 @@ target_link_libraries(${target_project} PRIVATE
     pico_stdlib
     hardware_i2c
     hardware_pio
-    pico_cyw43_arch_none
     i2c
     oled
     tinyusb_host
